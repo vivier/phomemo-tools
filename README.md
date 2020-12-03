@@ -24,15 +24,30 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   tools/phomemo-filter.py my_picture.png > /dev/rfcomm0
 ```
 
-## 2. Protocol
+## 2. CUPS
 
-### 2.1. HEADER
+### 2.1. Installation
+
+```
+  $ cd cups
+  $ make
+  $ sudo make install
+```
+
+### 2.2. Configuration
+
+ Use http://localhost:631 to add the Phomemo MR02 printer using a serial port.
+Then edit /etc/cups/printers.conf to set the `DeviceURI serial:/dev/rfcomm0`.
+
+## 3. Protocol
+
+### 3.1. HEADER
 
 ```
   0x1b 0x40 0x1b 0x61 0x01 0x1f 0x11 0x02 0x04
 ```
 
-### 2.2. BLOCK MARKER
+### 3.2. BLOCK MARKER
 ```
   0x1d 0x76
   0x30 0x00
@@ -45,12 +60,12 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   If the picture is not finished, a new block marker must be sent with
   the remaining number of line (max is 255).
 
-### 2.3. FOOTER
+### 3.3. FOOTER
 ```
   0x1b 0x64 0x02 0x1b 0x64 0x02 0x1f 0x11 0x08 0x1f 0x11 0x0e 0x1f 0x11
   0x07 0x1f 0x11 0x09
 ```
-### 2.4. IMAGE
+### 3.4. IMAGE
 
   Each line is 48 bytes long, each bit is a point (384 pt/line).
   size of a line is 48 mm (80 pt/cm or 203,2 dpi, as announced by Phomemo).
