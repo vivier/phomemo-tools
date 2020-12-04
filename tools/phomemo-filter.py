@@ -37,7 +37,7 @@ def print_line(image, line):
             # 0x0a breaks the rendering
             # 0x0a alone is processed like LineFeed by the printe
             if byte == 0x0a:
-                byte = 0x0b
+                byte = 0x14
             stdout.write(byte.to_bytes(1, 'little'))
     return
 
