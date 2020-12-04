@@ -31,6 +31,7 @@ make DESTDIR=%{buildroot} install
 %files
 /usr/share/phomemo/LICENSE
 /usr/share/phomemo/README.md
+/usr/share/phomemo/phomemo-q22.xml
 /usr/share/phomemo/phomemo-filter.py
 /usr/share/phomemo/format-checker.py
 /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
