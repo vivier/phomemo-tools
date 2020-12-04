@@ -2,6 +2,7 @@ NAME = phomemo-tools
 VERSION = 1.0
 
 FILES = Makefile
+FILES += phomemo-tools.spec
 FILES += LICENSE
 FILES += README.md
 FILES += tools/Makefile
@@ -27,3 +28,6 @@ dist:
 clean:
 	rm -fr $(NAME)-$(VERSION).tar.xz
 	rm -fr cups/ppd
+
+rpm: all dist
+	rpmbuild --ta $(NAME)-$(VERSION).tar.xz
