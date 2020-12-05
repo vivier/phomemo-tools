@@ -8,6 +8,7 @@ the bluetooth packets emitted by the Android application.
 
 ## 1. Usage
 
+### 1.1. Bluetooth
 * connection
 
 ```
@@ -24,6 +25,50 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   tools/phomemo-filter.py my_picture.png > /dev/rfcomm0
 ```
 
+### 1.2. USB
+
+* Plug the USB printer cable
+
+* check the printer is present:
+
+```
+  $ lsusb
+  ...
+  Bus 003 Device 013: ID 0493:b002 MAG Technology Co., Ltd 
+  ...
+```
+You can see the serial port in the dmesg and in /dev:
+
+```
+  $ dmesg
+  ...
+  usb 3-3.7.2: new full-speed USB device number 13 using xhci_hcd
+  usb 3-3.7.2: New USB device found, idVendor=0493, idProduct=b002, bcdDevice= 3.00
+  usb 3-3.7.2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+  usb 3-3.7.2: Product: USB Virtual COM
+  usb 3-3.7.2: Manufacturer: Nuvoton
+  usb 3-3.7.2: SerialNumber: A02014090305
+  cdc_acm 3-3.7.2:1.0: ttyACM0: USB ACM device
+  usblp 3-3.7.2:1.2: usblp0: USB Bidirectional printer dev 13 if 2 alt 0 proto 2 vid 0x0493 pid 0xB002
+  $ ls -lrt /dev
+  ...
+  drwxr-xr-x.  2 root    root         100 Dec  5 17:44 usb
+  crw-rw----.  1 root    dialout 166,   0 Dec  5 17:44 ttyACM0
+  ...
+  $ ls -lrt /dev/usb
+  total 0
+  crw-------. 1 root root 180, 96 Dec  5 16:46 hiddev0
+  crw-------. 1 root root 180, 97 Dec  5 16:46 hiddev1
+  crw-rw----. 1 root lp   180,  0 Dec  5 17:44 lp0
+```
+
+* send the picture to the printer:
+
+You need to be root or in the lp group
+
+```
+  # tools/phomemo-filter.py my_picture.png > /dev/usb/lp0
+```
 ## 2. CUPS
 
 ### 2.1. Installation
@@ -35,6 +80,7 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
 ```
 
 ### 2.2. Configuration
+#### 2.2.1. Bluetooth
 
 ```
   $ sudo lpadmin -p M02 -E -v serial:/dev/rfcomm0 \
@@ -43,6 +89,13 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
 
 Before starting to print, be sure the file /dev/rfcomm0 is present
 (run "rfcomm connect" for that)
+
+#### 2.2.2. USB
+
+```
+  $ sudo lpadmin -p M02 -E -v serial:/dev/usb/lp0 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
+```
 
 ## 3. Protocol
 
