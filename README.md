@@ -36,8 +36,13 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
 
 ### 2.2. Configuration
 
- Use http://localhost:631 to add the Phomemo MR02 printer using a serial port.
-Then edit /etc/cups/printers.conf to set the `DeviceURI serial:/dev/rfcomm0`.
+```
+  $ sudo lpadmin -p M02 -E -v serial:/dev/rfcomm0 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
+```
+
+Before starting to print, be sure the file /dev/rfcomm0 is present
+(run "rfcomm connect" for that)
 
 ## 3. Protocol
 
