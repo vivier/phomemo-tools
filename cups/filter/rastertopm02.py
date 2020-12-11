@@ -29,12 +29,12 @@ def print_header():
         stdout.write(b'\x1b\x40\x1b\x61\x01\x1f\x11\x02\x04')
     return
 
-def print_marker(lines=0x100):
+def print_marker(lines=0xff):
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
         stdout.write(0x761d.to_bytes(2, 'little'))
         stdout.write(0x0030.to_bytes(2, 'little'))
         stdout.write(0x0030.to_bytes(2, 'little'))
-        stdout.write((lines - 1).to_bytes(2, 'little'))
+        stdout.write(lines.to_bytes(2, 'little'))
     return
 
 def print_footer():
@@ -54,10 +54,6 @@ def print_line(image, line):
             for bit in range(8):
                 if image.getpixel((x * 8 + bit, line)) == 0:
                     byte |= 1 << (7 - bit)
-            # 0x0a breaks the rendering
-            # 0x0a alone is processed like LineFeed by the printe
-            if byte == 0x0a:
-                byte = 0x14
             stdout.write(byte.to_bytes(1, 'little'))
     return
 
@@ -117,8 +113,8 @@ for i, datatuple in enumerate(pages):
     print_header()
     while remaining > 0:
         lines = remaining
-        if lines > 256:
-            lines = 256
+        if lines > 255:
+            lines = 255
         print_marker(lines)
         remaining -= lines
         while lines > 0:
