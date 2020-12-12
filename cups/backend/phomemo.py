@@ -59,11 +59,20 @@ try:
     print('STATE: +sending-data', file=sys.stderr)
     with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
         sent = sock.send(stdin.read())
+        print('DEBUG: sent %d' % (sent), file=sys.stderr)
+except:
+    print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
+    exit(1)
+try:
     # we need to wait the printer answer before closing the socket
     # otherwise the print is stopped
     print('STATE: +receiving-data', file=sys.stderr)
-    received = sock.recv(28)
-except BluetoothError as btErr:
-    print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
-    exit(1)
+    sock.settimeout(8)
+    while True:
+        received = sock.recv(28)
+        print('DEBUG: ' + " 0x".join("%02x" % b for b in received))
+        if not received:
+            break
+except:
+    print('DEBUG: Done', file=sys.stderr)
 exit(0)
