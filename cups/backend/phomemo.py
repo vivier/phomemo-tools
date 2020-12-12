@@ -49,24 +49,24 @@ if uri[0] != 'phomemo':
 a = uri[1]
 bdaddr = a[0:2:] + ':' + a[2:4:] + ':' + a[4:6:] + ':' + a[6:8:] + ':' + a[8:10:] + ':' + a[10:12:]
 
-print('DEBUG: ' + sys.argv[0] +' device ' + bdaddr,  file=sys.stderr)
+print('DEBUG: ' + sys.argv[0] +' device ' + bdaddr)
 
 try:
-    print('STATE: +connecting-to-device', file=sys.stderr)
+    print('STATE: +connecting-to-device')
     sock = BluetoothSocket(RFCOMM)
     sock.bind(('00:00:00:00:00:00', 0))
     sock.connect((bdaddr, 1))
-    print('STATE: +sending-data', file=sys.stderr)
+    print('STATE: +sending-data')
     with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
         sent = sock.send(stdin.read())
-        print('DEBUG: sent %d' % (sent), file=sys.stderr)
+        print('DEBUG: sent %d' % (sent))
 except:
     print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
     exit(1)
 try:
     # we need to wait the printer answer before closing the socket
     # otherwise the print is stopped
-    print('STATE: +receiving-data', file=sys.stderr)
+    print('STATE: +receiving-data')
     sock.settimeout(8)
     while True:
         received = sock.recv(28)
@@ -74,5 +74,5 @@ try:
         if not received:
             break
 except:
-    print('DEBUG: Done', file=sys.stderr)
+    print('DEBUG: Done')
 exit(0)
