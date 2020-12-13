@@ -71,8 +71,6 @@ try:
     while True:
         received = sock.recv(28)
         print('DEBUG: ' + " 0x".join("%02x" % b for b in received))
-        if not received:
-            break
 except:
-    print('DEBUG: Done')
+    pass
 exit(0)
