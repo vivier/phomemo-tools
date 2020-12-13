@@ -4,7 +4,7 @@ import sys, os
 from collections import namedtuple
 from struct import unpack
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 ESC = b'\x1b'
 GS  = b'\x1d'
@@ -75,7 +75,7 @@ def print_header(file):
     select_justification(file, 1)
     return
 
-def print_marker(file, lines = 0xff, mode = 0, length = 48):
+def print_raster(file, image, line, lines = 0xff, mode = 0, length = 48):
     file.write(GS + b'v0')   # GS v 0 : print raster bit image
     # 0: normal, 1 double width, 2 double heigh, 3 quadruple
     file.write(mode.to_bytes(1, 'little'))
@@ -83,20 +83,14 @@ def print_marker(file, lines = 0xff, mode = 0, length = 48):
     file.write(length.to_bytes(2, 'little'))
     # nulber of lines in the image
     file.write(lines.to_bytes(2, 'little'))
+    # bit image
+    block = image.crop((0, line, image.width, line + lines))
+    stdout.write(block.tobytes())
     return
 
 def print_and_feed(file, lines = 1):
     file.write(ESC + b'd') # print and feed
     file.write(lines.to_bytes(1, 'little'))
-
-def print_line(file, image, line):
-    for x in range(int(image.width / 8)):
-        byte = 0
-        for bit in range(8):
-            if image.getpixel((x * 8 + bit, line)) == 0:
-                byte |= 1 << (7 - bit)
-        file.write(byte.to_bytes(1, 'little'))
-    return
 
 pages = read_ras3(sys.stdin.buffer.read())
 
@@ -108,6 +102,7 @@ for i, datatuple in enumerate(pages):
 
     im = Image.frombuffer(mode='L', data=imgdata,
                           size=(header.cupsWidth, header.cupsHeight))
+    im = ImageOps.invert(im)
     im = im.convert('1')
     if im.width > 384:
         im = im.crop((int(im.width / 2) - 192, 0,
@@ -115,18 +110,13 @@ for i, datatuple in enumerate(pages):
     elif im.width < 384:
         im = ImageOps.expand(im, int((384 - im.width) / 2), 0xff)
 
-    remaining = im.height
-    line=0
+    line = 0
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
         print_header(stdout)
-        while remaining > 0:
-            lines = remaining
+        while line < im.height:
+            lines = im.height - line
             if lines > 255:
                 lines = 255
-            print_marker(stdout,lines)
-            remaining -= lines
-            while lines > 0:
-                print_line(stdout, im, line)
-                lines -= 1
-                line += 1
+            print_raster(stdout, im, line, lines)
+            line += lines
         print_and_feed(stdout, 2)
