@@ -73,7 +73,6 @@ def select_justification(file, justification = 1):
 def print_header(file):
     printer_init(file)
     select_justification(file, 1)
-    file.write(b'x1f\x11\x02\x04')
     return
 
 def print_marker(file, lines = 0xff, mode = 0, length = 48):
@@ -89,15 +88,6 @@ def print_marker(file, lines = 0xff, mode = 0, length = 48):
 def print_and_feed(file, lines = 1):
     file.write(ESC + b'd') # print and feed
     file.write(lines.to_bytes(1, 'little'))
-
-def print_footer(file):
-    print_and_feed(file, 2)
-    print_and_feed(file, 2)
-    file.write(b'\x1f\x11\x08')
-    file.write(b'\x1f\x11\x0e')
-    file.write(b'\x1f\x11\x07')
-    file.write(b'\x1f\x11\x09')
-    return
 
 def print_line(file, image, line):
     for x in range(int(image.width / 8)):
@@ -139,5 +129,4 @@ for i, datatuple in enumerate(pages):
                 print_line(stdout, im, line)
                 lines -= 1
                 line += 1
-
-        print_footer(stdout)
+        print_and_feed(stdout, 2)
