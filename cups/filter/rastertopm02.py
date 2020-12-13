@@ -6,6 +6,9 @@ from struct import unpack
 
 from PIL import Image
 
+ESC = b'\x1b'
+GS  = b'\x1d'
+
 CupsRas3 = namedtuple(
     # Documentation at https://www.cups.org/doc/spec-raster.html
     'CupsRas3',
@@ -23,39 +26,6 @@ CupsRas3 = namedtuple(
     'cupsString6 cupsString7 cupsString8 cupsString9 cupsString10 cupsString11 cupsString12 cupsString13 cupsString14 '
     'cupsString15 cupsString16 cupsMarkerType cupsRenderingIntent cupsPageSizeName'
 )
-
-def print_header():
-    with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-        stdout.write(b'\x1b\x40\x1b\x61\x01\x1f\x11\x02\x04')
-    return
-
-def print_marker(lines=0xff):
-    with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-        stdout.write(0x761d.to_bytes(2, 'little'))
-        stdout.write(0x0030.to_bytes(2, 'little'))
-        stdout.write(0x0030.to_bytes(2, 'little'))
-        stdout.write(lines.to_bytes(2, 'little'))
-    return
-
-def print_footer():
-    with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-        stdout.write(b'\x1b\x64\x02')
-        stdout.write(b'\x1b\x64\x02')
-        stdout.write(b'\x1f\x11\x08')
-        stdout.write(b'\x1f\x11\x0e')
-        stdout.write(b'\x1f\x11\x07')
-        stdout.write(b'\x1f\x11\x09')
-    return
-
-def print_line(image, line):
-    with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-        for x in range(int(image.width / 8)):
-            byte = 0
-            for bit in range(8):
-                if image.getpixel((x * 8 + bit, line)) == 0:
-                    byte |= 1 << (7 - bit)
-            stdout.write(byte.to_bytes(1, 'little'))
-    return
 
 def read_ras3(rdata):
     if not rdata:
@@ -91,6 +61,53 @@ def read_ras3(rdata):
 
     return pages
 
+def printer_init(file):
+    file.write(ESC + b'@') # initialize printer
+    return
+
+def select_justification(file, justification = 1):
+    file.write(ESC + b'a') # select justification
+    file.write(justification.to_bytes(1, 'little'))
+    return
+
+def print_header(file):
+    printer_init(file)
+    select_justification(file, 1)
+    file.write(b'x1f\x11\x02\x04')
+    return
+
+def print_marker(file, lines = 0xff, mode = 0, length = 48):
+    file.write(GS + b'v0')   # GS v 0 : print raster bit image
+    # 0: normal, 1 double width, 2 double heigh, 3 quadruple
+    file.write(mode.to_bytes(1, 'little'))
+    # number of bytes / line
+    file.write(length.to_bytes(2, 'little'))
+    # nulber of lines in the image
+    file.write(lines.to_bytes(2, 'little'))
+    return
+
+def print_and_feed(file, lines = 1):
+    file.write(ESC + b'd') # print and feed
+    file.write(lines.to_bytes(1, 'little'))
+
+def print_footer(file):
+    print_and_feed(file, 2)
+    print_and_feed(file, 2)
+    file.write(b'\x1f\x11\x08')
+    file.write(b'\x1f\x11\x0e')
+    file.write(b'\x1f\x11\x07')
+    file.write(b'\x1f\x11\x09')
+    return
+
+def print_line(file, image, line):
+    for x in range(int(image.width / 8)):
+        byte = 0
+        for bit in range(8):
+            if image.getpixel((x * 8 + bit, line)) == 0:
+                byte |= 1 << (7 - bit)
+        file.write(byte.to_bytes(1, 'little'))
+    return
+
 pages = read_ras3(sys.stdin.buffer.read())
 
 for i, datatuple in enumerate(pages):
@@ -110,16 +127,17 @@ for i, datatuple in enumerate(pages):
 
     remaining = im.height
     line=0
-    print_header()
-    while remaining > 0:
-        lines = remaining
-        if lines > 255:
-            lines = 255
-        print_marker(lines)
-        remaining -= lines
-        while lines > 0:
-            print_line(im, line)
-            lines -= 1
-            line += 1
+    with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
+        print_header(stdout)
+        while remaining > 0:
+            lines = remaining
+            if lines > 255:
+                lines = 255
+            print_marker(stdout,lines)
+            remaining -= lines
+            while lines > 0:
+                print_line(stdout, im, line)
+                lines -= 1
+                line += 1
 
-    print_footer()
+        print_footer(stdout)
