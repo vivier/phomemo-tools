@@ -60,7 +60,7 @@ try:
     with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
         sent = sock.send(stdin.read())
         print('DEBUG: sent %d' % (sent))
-except:
+except BluetoothError as btErr:
     print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
     exit(1)
 try:
