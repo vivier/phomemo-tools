@@ -155,7 +155,7 @@ Click on "Add a Printer...".
 ![Printers Panel](Pictures/Printers-6.jpg)
 
 #### 2.2.2. CLI
-##### 2.2.2.1. Bluetooth (Direct)
+##### 2.2.2.1. Bluetooth
 
 This definition will use the "phomemo" backend to connect to the printer:
 
@@ -163,18 +163,6 @@ This definition will use the "phomemo" backend to connect to the printer:
   $ sudo lpadmin -p M02 -E -v phomemo://DC0D309023C7 \
                            -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
 ```
-
-##### 2.2.2.1. Bluetooth (RFCOMM)
-
-This definition will use the /dev/rfcomm0 device to connect to the printer:
-
-```
-  $ sudo lpadmin -p M02 -E -v serial:/dev/rfcomm0 \
-                           -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
-```
-
-Before starting to print, be sure the file /dev/rfcomm0 is present
-(run "rfcomm connect" for that)
 
 ##### 2.2.2.2. USB
 
