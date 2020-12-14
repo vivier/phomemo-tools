@@ -6,6 +6,9 @@ the Phomemo M02 thermal printer from Linux.
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
 
+python3-pybluez and phomemo-tools CUPS driver can be found at
+[phomemo-tools RPM](http://vivier.eu/phomemo-tools/)
+
 ## 1. Usage
 
 ### 1.1. Bluetooth
