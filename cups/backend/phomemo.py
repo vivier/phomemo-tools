@@ -5,9 +5,11 @@ import os
 import subprocess
 import dbus
 from bluetooth import *
+from pyudev import Context
 
 bus = dbus.SystemBus()
 
+device_id = 'CLS:PRINTER;CMD:EPSON;DES:Thermal Printer;MFG:Phomemo;MDL:'
 def scan_bluetooth():
     manager = dbus.Interface(bus.get_object('org.bluez', '/'),
                              'org.freedesktop.DBus.ObjectManager')
@@ -27,13 +29,33 @@ def scan_bluetooth():
         address = properties['Address']
         device_uri = 'phomemo://' + address[0:2:]+address[3:5:]+address[6:8:]+address[9:11:]+address[12:14:]+address[15:17:]
         device_make_and_model = 'Phomemo ' + model
-        device_id = 'CLS:PRINTER;CMD:EPSON;DES:Thermal Printer;MFG:Phomemo;MDL:' + model + ';'
 
         print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
-              device_make_and_model + ' bluetooth ' + address + '" "' + device_id + '"')
+              device_make_and_model + ' bluetooth ' + address + '" "' + device_id + model + ';"')
+
+def scan_usb():
+    ctx = Context()
+    for device in ctx.list_devices(subsystem='usbmisc'):
+            parent = device.parent.parent
+            if parent.properties['ID_VENDOR_ID'] != '0493':
+                continue
+
+            if parent.properties['ID_MODEL_ID'] == 'b002':
+                model = 'M02'
+            elif parent.properties['ID_MODEL_ID'] == '8760':
+                model = 'M110'
+            else:
+                model = 'Unknown(' + parent.properties['ID_MODEL_ID'] + ')'
+            device_uri = device.properties['DEVNAME']
+            device_make_and_model = 'Phomemo ' + model
+            address = parent.properties['BUSNUM'] + ':' + parent.properties['DEVNUM']
+            print('serial ' + device_uri + ' "' + device_make_and_model + '" "' +
+              device_make_and_model + ' USB ' + address + '" "' + device_id + model + ';"')
+
 
 if len(sys.argv) == 1:
     scan_bluetooth()
+    scan_usb()
     exit(0)
 
 try:
