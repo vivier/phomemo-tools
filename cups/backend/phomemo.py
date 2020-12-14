@@ -31,7 +31,7 @@ def scan_bluetooth():
         device_make_and_model = 'Phomemo ' + model
 
         print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
-              device_make_and_model + ' bluetooth ' + address + '" "' + device_id + model + ';"')
+              device_make_and_model + ' bluetooth ' + address + '" "' + device_id + model + ' (BT);"')
 
 def scan_usb():
     ctx = Context()
@@ -46,11 +46,11 @@ def scan_usb():
                 model = 'M110'
             else:
                 model = 'Unknown(' + parent.properties['ID_MODEL_ID'] + ')'
-            device_uri = device.properties['DEVNAME']
+            device_uri = 'serial:' + device.properties['DEVNAME']
             device_make_and_model = 'Phomemo ' + model
             address = parent.properties['BUSNUM'] + ':' + parent.properties['DEVNUM']
             print('serial ' + device_uri + ' "' + device_make_and_model + '" "' +
-              device_make_and_model + ' USB ' + address + '" "' + device_id + model + ';"')
+              device_make_and_model + ' USB ' + address + '" "' + device_id + model + ' (USB);"')
 
 
 if len(sys.argv) == 1:
