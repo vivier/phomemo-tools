@@ -11,6 +11,7 @@ BuildRequires: cups
 Requires: cups
 Requires: python3
 Requires: python3-pillow
+Requires: python3-pybluez
 
 %description
 This packages provides tools to send images to print on Phomemo M02
@@ -37,6 +38,7 @@ make DESTDIR=%{buildroot} install
 /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
 /usr/share/cups/drv/phomemo-m02.drv
 /usr/lib/cups/filter/rastertopm02
+/usr/lib/cups/backend/phomemo
 
 %changelog
 * Fri Dec 4 2020 Laurent Vivier <laurent@vivier.eu> - 1.0
