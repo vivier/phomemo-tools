@@ -75,12 +75,12 @@ def print_header(file):
     select_justification(file, 1)
     return
 
-def print_raster(file, image, line, lines = 0xff, mode = 0, length = 48):
+def print_raster(file, image, line, lines = 0xff, mode = 0):
     file.write(GS + b'v0')   # GS v 0 : print raster bit image
     # 0: normal, 1 double width, 2 double heigh, 3 quadruple
     file.write(mode.to_bytes(1, 'little'))
     # number of bytes / line
-    file.write(length.to_bytes(2, 'little'))
+    file.write(int((image.width + 7) / 8).to_bytes(2, 'little'))
     # nulber of lines in the image
     file.write(lines.to_bytes(2, 'little'))
     # bit image
@@ -104,11 +104,6 @@ for i, datatuple in enumerate(pages):
                           size=(header.cupsWidth, header.cupsHeight))
     im = ImageOps.invert(im)
     im = im.convert('1')
-    if im.width > 384:
-        im = im.crop((int(im.width / 2) - 192, 0,
-                      int(im.width / 2) + 192, im.height))
-    elif im.width < 384:
-        im = ImageOps.expand(im, int((384 - im.width) / 2), 0xff)
 
     line = 0
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
