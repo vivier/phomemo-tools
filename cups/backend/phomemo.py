@@ -5,7 +5,8 @@ import os
 import subprocess
 import dbus
 from bluetooth import *
-from pyudev import Context
+import usb.core
+import usb.util
 
 bus = dbus.SystemBus()
 
@@ -33,25 +34,47 @@ def scan_bluetooth():
         print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
               device_make_and_model + ' bluetooth ' + address + '" "' + device_id + model + ' (BT);"')
 
-def scan_usb():
-    ctx = Context()
-    for device in ctx.list_devices(subsystem='usbmisc'):
-            parent = device.parent.parent
-            if parent.properties['ID_VENDOR_ID'] != '0493':
-                continue
+class find_class(object):
+    def __init__(self, class_):
+        self._class = class_
+    def __call__(self, device):
+        # first, let's check the device
+        if device.bDeviceClass == self._class:
+            return True
+        # ok, transverse all devices to find an
+        # interface that matches our class
+        for cfg in device:
+            # find_descriptor: what's it?
+            intf = usb.util.find_descriptor(
+                                        cfg,
+                                        bInterfaceClass=self._class
+                                )
+            if intf is not None:
+                return True
 
-            if parent.properties['ID_MODEL_ID'] == 'b002':
+        return False
+
+def scan_usb():
+    printers = usb.core.find(find_all=1, custom_match=find_class(7), idVendor=0x0493)
+    for printer in printers:
+            for cfg in printer:
+                intf = usb.util.find_descriptor(cfg, bInterfaceClass=7)
+                if intf is None:
+                    continue
+                Interface = intf.bInterfaceNumber
+                break
+            if printer.idProduct == 0xb002:
                 model = 'M02'
-            elif parent.properties['ID_MODEL_ID'] == '8760':
+            elif printer.idProduct == 0x8760:
                 model = 'M110'
             else:
-                model = 'Unknown(' + parent.properties['ID_MODEL_ID'] + ')'
-            device_uri = 'serial:' + device.properties['DEVNAME']
+                model = 'Unknown(0x%04x)' % (printer.idProduct)
+            usb.util.get_langids(printer)
+            SerialNumber = usb.util.get_string(printer, printer.iSerialNumber)
+            device_uri = 'usb://Unknown/Printer?serial=%s&interface=%d' % (SerialNumber, Interface)
             device_make_and_model = 'Phomemo ' + model
-            address = parent.properties['BUSNUM'] + ':' + parent.properties['DEVNUM']
             print('serial ' + device_uri + ' "' + device_make_and_model + '" "' +
-              device_make_and_model + ' USB ' + address + '" "' + device_id + model + ' (USB);"')
-
+              device_make_and_model + ' USB ' + SerialNumber + '" "' + device_id + model + ' (USB);"')
 
 if len(sys.argv) == 1:
     scan_bluetooth()

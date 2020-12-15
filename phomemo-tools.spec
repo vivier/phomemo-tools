@@ -12,6 +12,7 @@ Requires: cups
 Requires: python3
 Requires: python3-pillow
 Requires: python3-pybluez
+Requires: python3-pyusb
 
 %description
 This packages provides tools to send images to print on Phomemo M02
