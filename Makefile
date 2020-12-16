@@ -13,6 +13,7 @@ FILES += cups/README.md
 FILES += cups/filter/rastertopm02.py
 FILES += cups/backend/phomemo.py
 FILES += cups/drv/phomemo-m02.drv
+FILES += cups/drv/phomemo-m110.drv
 FILES += glabels/generate.sh
 FILES += glabels/Makefile
 FILES += glabels/Phomemo_Q22.template
