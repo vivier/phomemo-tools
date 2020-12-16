@@ -73,7 +73,7 @@ def scan_usb():
             SerialNumber = usb.util.get_string(printer, printer.iSerialNumber)
             device_uri = 'usb://Unknown/Printer?serial=%s&interface=%d' % (SerialNumber, Interface)
             device_make_and_model = 'Phomemo ' + model
-            print('serial ' + device_uri + ' "' + device_make_and_model + '" "' +
+            print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
               device_make_and_model + ' USB ' + SerialNumber + '" "' + device_id + model + ' (USB);"')
 
 if len(sys.argv) == 1:
