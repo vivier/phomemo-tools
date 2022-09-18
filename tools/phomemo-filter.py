@@ -13,7 +13,7 @@ def print_marker(lines=0x100):
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
         stdout.write(0x761d.to_bytes(2, 'little'))
         stdout.write(0x0030.to_bytes(2, 'little'))
-        stdout.write(0x0030.to_bytes(2, 'little'))
+        stdout.write(0x0048.to_bytes(2, 'little'))
         stdout.write((lines - 1).to_bytes(2, 'little'))
     return
 
@@ -74,8 +74,8 @@ except:
 if image.width > image.height:
     image = image.transpose(Image.ROTATE_90)
 
-# width 384 dots
-image = image.resize(size=(384, int(image.height * 384 / image.width)))
+# width 576 dots
+image = image.resize(size=(576, int(image.height * 576 / image.width)))
 
 # black&white printer: dithering
 image = image.convert(mode='1')

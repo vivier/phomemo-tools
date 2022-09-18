@@ -1,7 +1,7 @@
 Name: phomemo-tools
 Version: 1.0
 Release: 1%{?dist}
-Summary: A set of tools to use Phomemo M02 printer
+Summary: A set of tools to use Phomemo M02, M02S and M110 printer
 License: GPLv3
 
 Source: %{name}-%{version}.tar.xz
@@ -37,6 +37,7 @@ make DESTDIR=%{buildroot} install
 /usr/share/phomemo/phomemo-filter.py
 /usr/share/phomemo/format-checker.py
 /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
+/usr/share/cups/model/Phomemo/Phomemo-M02S.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
 /usr/share/cups/drv/phomemo-m02.drv
 /usr/share/cups/drv/phomemo-m110.drv
