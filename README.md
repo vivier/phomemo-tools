@@ -243,7 +243,7 @@ Dumpping USB packets.
   0x1b 0x4e 0x04  -> Print Density 
   0x0f            range: 01 - 0f
   0x1f  0x11      -> Media Type
-  0x0a            Mode: 0a="Label With Gaps" 0b="Contenuas" 26="Label With Marks"
+  0x0a            Mode: 0a="Label With Gaps" 0b="Continuas" 26="Label With Marks"
 ```
 
 ### 4.2. BLOCK MARKER
