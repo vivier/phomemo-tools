@@ -176,7 +176,7 @@ This definition will use the /dev/usb/lp0 device to connect to the printer:
                            -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
 ```
 
-## 3. Protocol
+## 3. Protocol for M02
 
 After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
 
@@ -231,3 +231,34 @@ After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
 51 30 30 31 45 30 XX XX XX XX XX XX XX XX XX -> Serial Numer: E05C0XXXXXX
 ```
 
+## 4. Protocol for M110
+
+Dumpping USB packets. 
+
+### 4.1. HEADER
+
+```
+  0x1b 0x4e 0x0d  -> Print Speed
+  0x05            range: 0x01 (Slow) -  0x05 (Fast)
+  0x1b 0x4e 0x04  -> Print Density 
+  0x0f            range: 01 - 0f
+  0x1f  0x11      -> Media Type
+  0x0a            Mode: 0a="Label With Gaps" 0b="Contenuas" 26="Label With Marks"
+```
+
+### 4.2. BLOCK MARKER
+
+```
+  0x1d 0x76 0x30 -> command GS v 0 : print raster bit image
+  0x00              mode: 0 (normal), 1 (double width),
+                          2 (double-height), 3 (quadruple)
+  0x2b 0x00         16bit, little-endian: number of bytes / line (43)
+  0xf0 0x00         16bit, little-endian: number of lines in the image (240)
+```
+
+### 4.3. FOOTER
+
+```
+  0x1f 0xf0 0x05 0x00 
+  0x1f 0xf0 0x03 0x00
+```
