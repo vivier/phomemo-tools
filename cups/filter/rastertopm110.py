@@ -85,7 +85,7 @@ def print_header(file):
     printer_init(file)
     select_speed(file, 5)
     select_density(file, 10)
-    select_density(file, b'\x0a')
+    select_media_type(file, b'\x0a')
     return
 
 def print_raster(file, image, line, lines = 0xff, mode = 0):
@@ -127,4 +127,4 @@ for i, datatuple in enumerate(pages):
                 lines = 255
             print_raster(stdout, im, line, lines)
             line += lines
-        print_footer(stdout, 2) 
+        print_footer(stdout) 
