@@ -75,13 +75,12 @@ def select_density(file, density = 10):
     file.write(density.to_bytes(1, 'little'))
     return
 
-def select_media_type(file):
-    # media_type : b'\x0a'="Label With Gaps" b'\x0b'="Contenuas" b'\x26'="Label With Marks"
+def select_media_type(file, media_type):
     file.write(b'\x1f' + b'\x11') # select Media Type, 
-    file.write(media_type)
+    file.write(media_type.to_bytes(1, 'little'))
     return
 
-def print_header(file, media_type = b'\x0a'):
+def print_header(file, media_type = 10):
     printer_init(file)
     select_speed(file, 5)
     select_density(file, 10)
@@ -120,7 +119,7 @@ for i, datatuple in enumerate(pages):
 
     line = 0
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-        print_header(stdout,header.MediaType)
+        print_header(stdout,header.cupsMediaType)
         while line < im.height:
             lines = im.height - line
             if lines > 255:

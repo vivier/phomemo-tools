@@ -45,9 +45,9 @@
   *Resolution - 8 0 0 0 203dpi
   ColorModel Gray/Grayscale w chunky 0
 
-  *MediaType 10 "Label With Gaps"
+  *MediaType 10 "LabelWithGaps/Label With Gaps"
   MediaType 11 "Continuas"
-  MediaType 38 "Label With Marks"
+  MediaType 38 "LabelWithMarks/Label With Marks"
 
   MediaSize "w20h100"
   MediaSize "w20h10"
