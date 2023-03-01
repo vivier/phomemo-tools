@@ -75,17 +75,17 @@ def select_density(file, density = 10):
     file.write(density.to_bytes(1, 'little'))
     return
 
-def select_media_type(file, media_type = b'\x0a'):
+def select_media_type(file):
     # media_type : b'\x0a'="Label With Gaps" b'\x0b'="Contenuas" b'\x26'="Label With Marks"
     file.write(b'\x1f' + b'\x11') # select Media Type, 
     file.write(media_type)
     return
 
-def print_header(file):
+def print_header(file, media_type = b'\x0a'):
     printer_init(file)
     select_speed(file, 5)
     select_density(file, 10)
-    select_media_type(file, b'\x0a')
+    select_media_type(file, media_type)
     return
 
 def print_raster(file, image, line, lines = 0xff, mode = 0):
@@ -120,7 +120,7 @@ for i, datatuple in enumerate(pages):
 
     line = 0
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-        print_header(stdout)
+        print_header(stdout,header.MediaType)
         while line < im.height:
             lines = im.height - line
             if lines > 255:
