@@ -1,7 +1,7 @@
 Name: phomemo-tools
 Version: 1.0
 Release: 1%{?dist}
-Summary: A set of tools to use Phomemo M02, M02S, M110 and M120 printers
+Summary: A set of tools to use Phomemo printers on Linux
 License: GPLv3
 
 Source: %{name}-%{version}.tar.xz
@@ -15,8 +15,8 @@ Requires: python3-pybluez
 Requires: python3-pyusb
 
 %description
-This packages provides tools to send images to print on Phomemo M02
-Thermal printer.
+This packages provides tools to send images to print on Phomemo
+Thermal printers.
 It also installs a CUPS driver for the printer into the system.
 
 %prep
