@@ -1,7 +1,7 @@
 # Phomemo-tools
 
 This package is trying to provide tools to print pictures onto
-the Phomemo M02 thermal printer from Linux.
+the Phomemo M02, M110 and M120 thermal printers from Linux.
 
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
@@ -77,6 +77,8 @@ You need to be root or in the lp group
 ### 2.1. Installation
 
 ```
+  $ sudo apt-get update
+  $ sudo apt-get -y install cups
   $ cd cups
   $ make
   $ sudo make install
@@ -159,21 +161,51 @@ Click on "Add a Printer...".
 
 #### 2.2.2. CLI
 ##### 2.2.2.1. Bluetooth
+###### 2.2.2.1.1 M02
 
-This definition will use the "phomemo" backend to connect to the printer:
+This definition will use the "phomemo" backend to connect to the M02 printer:
 
 ```
   $ sudo lpadmin -p M02 -E -v phomemo://DC0D309023C7 \
                            -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
 ```
+###### 2.2.2.1.2 M110
+This definition will use the "phomemo" backend to connect to the M110 printer:
+
+```
+  $ sudo lpadmin -p M110 -E -v phomemo://DC0D309023C7 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
+###### 2.2.2.1.3 M120
+This definition will use the "phomemo" backend to connect to the M120 printer (keep in mind the M120 printer uses the same drivers as the M110):
+
+```
+  $ sudo lpadmin -p M120 -E -v phomemo://DC0D309023C7 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
 
 ##### 2.2.2.2. USB
+###### 2.2.2.2.1 M02
 
 This definition will use the /dev/usb/lp0 device to connect to the printer:
 
 ```
   $ sudo lpadmin -p M02 -E -v serial:/dev/usb/lp0 \
                            -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
+```
+###### 2.2.2.1.2 M110
+This definition will use the /dev/usb/lp0 device to connect to the M110 printer:
+
+```
+  $ sudo lpadmin -p M110 -E -v phomemo:/dev/usb/lp0 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
+###### 2.2.2.1.3 M120
+This definition will use the /dev/usb/lp0 device to connect to the M120 printer (keep in mind the M120 printer uses the same drivers as the M110):
+
+```
+  $ sudo lpadmin -p M120 -E -v phomemo:/dev/usb/lp0 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
 ```
 
 ## 3. Protocol for M02
@@ -231,7 +263,7 @@ After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
 51 30 30 31 45 30 XX XX XX XX XX XX XX XX XX -> Serial Numer: E05C0XXXXXX
 ```
 
-## 4. Protocol for M110
+## 4. Protocol for M110/M120
 
 Dumpping USB packets. 
 
