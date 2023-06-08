@@ -46,7 +46,7 @@
   ColorModel Gray/Grayscale w chunky 0
 
   *MediaType 10 "LabelWithGaps/Label With Gaps"
-  MediaType 11 "Continuas"
+  MediaType 11 "Continuous"
   MediaType 38 "LabelWithMarks/Label With Marks"
 
   MediaSize "w20h100"
