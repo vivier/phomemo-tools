@@ -22,7 +22,7 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   Connected /dev/rfcomm0 to DC:0D:30:90:23:C7 on channel 1
   Press CTRL-C for hangup
 ```
-* send the picture to the printer
+* send the picture to the printer (the python script currently only works with M02 printers):
 
 ```
   tools/phomemo-filter.py my_picture.png > /dev/rfcomm0
@@ -65,7 +65,7 @@ You can see the serial port in the dmesg and in /dev:
   crw-rw----. 1 root lp   180,  0 Dec  5 17:44 lp0
 ```
 
-* send the picture to the printer:
+* send the picture to the printer (the python script currently only works with M02 printers):
 
 You need to be root or in the lp group
 
@@ -206,6 +206,24 @@ This definition will use the /dev/usb/lp0 device to connect to the M120 printer 
 ```
   $ sudo lpadmin -p M120 -E -v phomemo:/dev/usb/lp0 \
                            -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
+
+##### 2.2.2.3. Check printer options
+You can use the following command to check the options for your printer which will list the printer defaults with a "*":
+
+```
+  $ lpoptions -d M02 -l
+```
+##### 2.2.2.4. Printing
+You can use the following command to print text using CUPS:
+
+```
+  $ echo "This is test"  | lp -d M02 -o media=w50h60 -
+```
+You can use the following command to print an image using CUPS:
+
+```
+  $ lp -d M02 -o media=w50h60 my_picture.png
 ```
 
 ## 3. Protocol for M02
