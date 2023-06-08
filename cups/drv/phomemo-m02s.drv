@@ -38,7 +38,7 @@
   HWMargins 1mm 0 1mm 0
 
   Filter "application/vnd.cups-raster 100 rastertopm02"
-  *Resolution - 8 0 0 0 304dpi
+  *Resolution - 8 0 0 0 300dpi
   ColorModel Gray/Grayscale w chunky 0
 
   MediaSize "w50h10"
