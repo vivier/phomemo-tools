@@ -1,0 +1,77 @@
+//
+// Driver info file for Phomemo M110
+//
+// Copyright © 2020 Laurent Vivier <laurent@vivier.eu>
+//
+
+#include <font.defs>
+#include <media.defs>
+#include <label.h>
+
+#media "w20h100/Label 20mmx100mm" 20mm 100mm
+#media "w20h10/Label 20mmx10mm" 20mm 10mm
+#media "w20h20/Label 20mmx20mm" 20mm 20mm
+#media "w25h10/Label 25mmx10mm" 25mm 10mm
+#media "w25h30/Label 25mmx30mm" 25mm 30mm
+#media "w25h38/Label 25mmx38mm" 25mm 38mm
+#media "w30h20/Label 30mmx20mm" 30mm 20mm
+#media "w30h25/Label 30mmx25mm" 30mm 25mm
+#media "w30h30/Label 30mmx30mm" 30mm 30mm
+#media "w35h15/Label 35mmx15mm" 35mm 15mm
+#media "w40h20/Label 40mmx20mm" 40mm 20mm
+#media "w40h30/Label 40mmx30mm" 40mm 30mm
+#media "w40h40/Label 40mmx40mm" 40mm 40mm
+#media "w40h60/Label 40mmx60mm" 40mm 60mm
+#media "w40h80/Label 40mmx80mm" 40mm 80mm
+#media "w45h60/Label 45mmx60mm" 45mm 60mm
+#media "w50h20/Label 50mmx20mm" 50mm 20mm
+#media "w50h30/Label 50mmx30mm" 50mm 30mm
+#media "w50h50/Label 50mmx50mm" 50mm 50mm
+#media "w50h70/Label 50mmx70mm" 50mm 70mm
+#media "w50h80/Label 50mmx80mm" 50mm 80mm
+
+{
+  Manufacturer "Phomemo"
+  ModelName "M120"
+  PCFileName "Phomemo-M120.ppd"
+  Version 1.0
+  Attribute "NickName" "" "Phomemo M120"
+  DriverType label
+  ColorDevice No
+  Attribute "cupsSNMPSupplies" "" "false"
+  HWMargins 1mm 0 1mm 0
+
+  Filter "application/vnd.cups-raster 100 rastertopm110"
+  *Resolution - 8 0 0 0 203dpi
+  ColorModel Gray/Grayscale w chunky 0
+
+  *MediaType 10 "LabelWithGaps/Label With Gaps"
+  MediaType 11 "Continuous"
+  MediaType 38 "LabelWithMarks/Label With Marks"
+
+  MediaSize "w20h100"
+  MediaSize "w20h10"
+  MediaSize "w20h20"
+  MediaSize "w25h10"
+  MediaSize "w25h30"
+  MediaSize "w25h38"
+  MediaSize "w30h20"
+  MediaSize "w30h25"
+  MediaSize "w30h30"
+  MediaSize "w35h15"
+  MediaSize "w40h20"
+  *MediaSize "w40h30"
+  MediaSize "w40h40"
+  MediaSize "w40h60"
+  MediaSize "w40h80"
+  MediaSize "w45h60"
+  MediaSize "w50h20"
+  MediaSize "w50h30"
+  MediaSize "w50h50"
+  MediaSize "w50h70"
+  MediaSize "w50h80"
+
+  VariablePaperSize Yes
+  MinSize 0.00 0.00
+  MaxSize 0.00 0.00
+}

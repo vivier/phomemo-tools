@@ -81,7 +81,7 @@ def print_raster(file, image, line, lines = 0xff, mode = 0):
     file.write(mode.to_bytes(1, 'little'))
     # number of bytes / line
     file.write(int((image.width + 7) / 8).to_bytes(2, 'little'))
-    # nulber of lines in the image
+    # number of lines in the image
     file.write(lines.to_bytes(2, 'little'))
     # bit image
     block = image.crop((0, line, image.width, line + lines))
