@@ -1,6 +1,6 @@
 # Phomemo-tools
 
-This package is trying to provide tools to print pictures onto
+This package is trying to provide tools to print pictures using
 the Phomemo M02, M110 and M120 thermal printers from Linux.
 
 All the information here has been reverse-engineered sniffing
@@ -22,7 +22,7 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   Connected /dev/rfcomm0 to DC:0D:30:90:23:C7 on channel 1
   Press CTRL-C for hangup
 ```
-* send the picture to the printer (the python script currently only works with M02 printers):
+* Send the picture to the printer (the python script currently only works with M02 printers):
 
 ```
   tools/phomemo-filter.py my_picture.png > /dev/rfcomm0
@@ -32,7 +32,7 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
 
 * Plug the USB printer cable
 
-* check the printer is present:
+* Check the printer is present:
 
 ```
   $ lsusb
@@ -65,7 +65,7 @@ You can see the serial port in the dmesg and in /dev:
   crw-rw----. 1 root lp   180,  0 Dec  5 17:44 lp0
 ```
 
-* send the picture to the printer (the python script currently only works with M02 printers):
+* Send the picture to the printer (the python script currently only works with M02 printers):
 
 You need to be root or in the lp group
 
@@ -225,7 +225,7 @@ You can use the following command to print an image using CUPS:
 ```
   $ lp -d M02 -o media=w50h60 my_picture.png
 ```
-To note is that the M110 & M120 printers have support for LabelWithGaps, Continuous and LabelWithMarks media types which can be specified as follows:
+The M110 & M120 printers have support for LabelWithGaps, Continuous and LabelWithMarks media types which can be specified as follows:
 
 ```
   $ echo "This is test"  | lp -d M110 -o media=w30h20 -o MediaType=Continuous
