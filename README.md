@@ -1,7 +1,7 @@
 # Phomemo-tools
 
-This package is trying to provide tools to print pictures onto
-the Phomemo M02 thermal printer from Linux.
+This package is trying to provide tools to print pictures using
+the Phomemo M02, M110 and M120 thermal printers from Linux.
 
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
@@ -22,7 +22,7 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   Connected /dev/rfcomm0 to DC:0D:30:90:23:C7 on channel 1
   Press CTRL-C for hangup
 ```
-* send the picture to the printer
+* Send the picture to the printer (the python script currently only works with M02 printers):
 
 ```
   tools/phomemo-filter.py my_picture.png > /dev/rfcomm0
@@ -32,7 +32,7 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
 
 * Plug the USB printer cable
 
-* check the printer is present:
+* Check the printer is present:
 
 ```
   $ lsusb
@@ -65,7 +65,7 @@ You can see the serial port in the dmesg and in /dev:
   crw-rw----. 1 root lp   180,  0 Dec  5 17:44 lp0
 ```
 
-* send the picture to the printer:
+* Send the picture to the printer (the python script currently only works with M02 printers):
 
 You need to be root or in the lp group
 
@@ -77,6 +77,8 @@ You need to be root or in the lp group
 ### 2.1. Installation
 
 ```
+  $ sudo apt-get update
+  $ sudo apt-get -y install cups
   $ cd cups
   $ make
   $ sudo make install
@@ -159,21 +161,74 @@ Click on "Add a Printer...".
 
 #### 2.2.2. CLI
 ##### 2.2.2.1. Bluetooth
+###### 2.2.2.1.1 M02
 
-This definition will use the "phomemo" backend to connect to the printer:
+This definition will use the "phomemo" backend to connect to the M02 printer:
 
 ```
   $ sudo lpadmin -p M02 -E -v phomemo://DC0D309023C7 \
                            -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
 ```
+###### 2.2.2.1.2 M110
+This definition will use the "phomemo" backend to connect to the M110 printer:
+
+```
+  $ sudo lpadmin -p M110 -E -v phomemo://DC0D309023C7 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
+###### 2.2.2.1.3 M120
+This definition will use the "phomemo" backend to connect to the M120 printer (keep in mind the M120 printer uses the same drivers as the M110):
+
+```
+  $ sudo lpadmin -p M120 -E -v phomemo://DC0D309023C7 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
 
 ##### 2.2.2.2. USB
+###### 2.2.2.2.1 M02
 
 This definition will use the /dev/usb/lp0 device to connect to the printer:
 
 ```
   $ sudo lpadmin -p M02 -E -v serial:/dev/usb/lp0 \
                            -P /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
+```
+###### 2.2.2.1.2 M110
+This definition will use the /dev/usb/lp0 device to connect to the M110 printer:
+
+```
+  $ sudo lpadmin -p M110 -E -v phomemo:/dev/usb/lp0 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
+###### 2.2.2.1.3 M120
+This definition will use the /dev/usb/lp0 device to connect to the M120 printer (keep in mind the M120 printer uses the same drivers as the M110):
+
+```
+  $ sudo lpadmin -p M120 -E -v phomemo:/dev/usb/lp0 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
+```
+
+##### 2.2.2.3. Check printer options
+You can use the following command to check the options for your printer which will list the printer defaults with a "*":
+
+```
+  $ lpoptions -d M02 -l
+```
+##### 2.2.2.4. Printing
+You can use the following command to print text using CUPS:
+
+```
+  $ echo "This is test"  | lp -d M02 -o media=w50h60 -
+```
+You can use the following command to print an image using CUPS:
+
+```
+  $ lp -d M02 -o media=w50h60 my_picture.png
+```
+The M110 & M120 printers have support for LabelWithGaps, Continuous and LabelWithMarks media types which can be specified as follows:
+
+```
+  $ echo "This is test"  | lp -d M110 -o media=w30h20 -o MediaType=Continuous
 ```
 
 ## 3. Protocol for M02
@@ -231,7 +286,7 @@ After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
 51 30 30 31 45 30 XX XX XX XX XX XX XX XX XX -> Serial Numer: E05C0XXXXXX
 ```
 
-## 4. Protocol for M110
+## 4. Protocol for M110/M120
 
 Dumpping USB packets. 
 
