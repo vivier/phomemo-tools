@@ -225,6 +225,11 @@ You can use the following command to print an image using CUPS:
 ```
   $ lp -d M02 -o media=w50h60 my_picture.png
 ```
+To note is that the M110 & M120 printers have support for LabelWithGaps, Continuous and LabelWithMarks media types which can be specified as follows:
+
+```
+  $ echo "This is test"  | lp -d M110 -o media=w30h20 -o MediaType=Continuous
+```
 
 ## 3. Protocol for M02
 
