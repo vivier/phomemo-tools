@@ -62,7 +62,7 @@ def read_ras3(rdata):
     return pages
 '''
 2023-07-12 bleriotx - Fix for Phomemo M220 printer.
-There is not need to send a printer init code sequence.
+There is no need to send a printer init code sequence.
 
 def printer_init(file):
     file.write(ESC + b'@') # initialize printer
