@@ -60,14 +60,6 @@ def read_ras3(rdata):
         rdata = rdata[1796 + (header.cupsWidth * header.cupsHeight * header.cupsBitsPerPixel // 8):]
 
     return pages
-'''
-2023-07-12 bleriotx - Fix for Phomemo M220 printer.
-There is no need to send a printer init code sequence.
-
-def printer_init(file):
-    file.write(ESC + b'@') # initialize printer
-    return
-'''
 
 def select_speed(file, speed = 5):
     file.write(ESC + b'\x4e' + b'\x0d') # select Print Speed
@@ -85,11 +77,6 @@ def select_media_type(file, media_type):
     return
 
 def print_header(file, media_type = 10):
-    '''
-    2023-07-12 bleriotx - Fix for Phomemo M220 printer.
-    There is not need to send a printer init code sequence.
-    '''
-    #printer_init(file)
     select_speed(file, 5)
     select_density(file, 10)
     select_media_type(file, media_type)
@@ -126,27 +113,6 @@ for i, datatuple in enumerate(pages):
     im = im.convert('1')
 
     line = 0
-    
-    '''
-    2023-07-12 bleriotx - Fix for Phomemo M220 printer.
-    Original code below breaks the print job into 255 line blocks. At the end
-    of each block a new GSv0 sequence is sent. This confuses the M220, resulting in
-    a label feed or a gap in the label. 
-
-    The modified code send the entire image in one block.
-    '''
-    
-    '''
-    with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-        print_header(stdout,header.cupsMediaType)
-        while line < im.height:
-            lines = im.height - line
-            if lines > 255:
-                lines = 255
-            print_raster(stdout, im, line, lines)
-            line += lines
-        print_footer(stdout) 
-    '''
     
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
         print_header(stdout,header.cupsMediaType)
