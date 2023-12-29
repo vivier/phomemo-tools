@@ -4,7 +4,7 @@ import sys
 import os
 import subprocess
 import dbus
-from bluetooth import *
+import socket
 import usb.core
 import usb.util
 
@@ -98,14 +98,13 @@ print('DEBUG: ' + sys.argv[0] +' device ' + bdaddr)
 
 try:
     print('STATE: +connecting-to-device')
-    sock = BluetoothSocket(RFCOMM)
-    sock.bind(('00:00:00:00:00:00', 0))
+    sock = socket.socket(socket.AF_BLUETOOTH, proto=socket.BTPROTO_RFCOMM)
     sock.connect((bdaddr, 1))
     print('STATE: +sending-data')
     with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
         sent = sock.send(stdin.read())
         print('DEBUG: sent %d' % (sent))
-except BluetoothError as btErr:
+except OSError as btErr:
     print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
     exit(1)
 try:
