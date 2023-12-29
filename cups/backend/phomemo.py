@@ -23,9 +23,12 @@ def scan_bluetooth():
 
         properties = interfaces['org.bluez.Device1']
         name = properties['Name']
-        if (not name.startswith('Mr.in')):
-                continue
-        model = name[6:]
+        if (name.startswith('Mr.in')):
+            model = name[6:]
+        elif (name == 'T02'):
+            model = name
+        else:
+            continue
 
         address = properties['Address']
         device_uri = 'phomemo://' + address[0:2:]+address[3:5:]+address[6:8:]+address[9:11:]+address[12:14:]+address[15:17:]
