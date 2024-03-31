@@ -61,13 +61,20 @@ VariablePaperSize Yes
 MinSize 0.00 0.00
 MaxSize 0.00 0.00
 
+Option "FeedLines/Feed Lines for Tearing" PickOne DocumentSetup 20.0
+Attribute CustomFeedLines True "<</AdvanceDistance 3 -1 roll>>setpagedevice"
+Attribute ParamCustomFeedLines Lines "1 int 0 20"
 {
   Attribute "NickName" "" "Phomemo M02"
   ModelName "M02"
   PCFileName "Phomemo-M02.ppd"
+  Option "FeedLines" PickOne DocumentSetup 20.0
+  *Choice "Default/Default (2)" "<</AdvanceDistance 2>>setpagedevice"
 }
 {
   Attribute "NickName" "" "Phomemo T02"
   ModelName "T02"
   PCFileName "Phomemo-T02.ppd"
+  Option "FeedLines" PickOne DocumentSetup 20.0
+  *Choice "Default/Default (4)" "<</AdvanceDistance 4>>setpagedevice"
 }
