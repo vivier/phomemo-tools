@@ -26,41 +26,48 @@
 #media "w50h130/Label 50mmx130mm" 50mm 130mm
 #media "w50h140/Label 50mmx140mm" 50mm 140mm
 #media "w50h150/Label 50mmx150mm" 50mm 150mm
+
+Manufacturer "Phomemo"
+Version 2.0
+DriverType label
+ColorDevice No
+Attribute "cupsSNMPSupplies" "" "false"
+HWMargins 1mm 0 1mm 0
+
+Filter "application/vnd.cups-raster 100 rastertopm02"
+*Resolution - 8 0 0 0 203dpi
+ColorModel Gray/Grayscale w chunky 0
+
+MediaSize "w50h10"
+MediaSize "w50h20"
+MediaSize "w50h25"
+MediaSize "w50h30"
+MediaSize "w50h40"
+MediaSize "w50h50"
+*MediaSize "w50h60"
+MediaSize "w50h70"
+MediaSize "w50h75"
+MediaSize "w50h80"
+MediaSize "w50h90"
+MediaSize "w50h100"
+MediaSize "w50h110"
+MediaSize "w50h120"
+MediaSize "w50h125"
+MediaSize "w50h130"
+MediaSize "w50h140"
+MediaSize "w50h150"
+
+VariablePaperSize Yes
+MinSize 0.00 0.00
+MaxSize 0.00 0.00
+
 {
-  Manufacturer "Phomemo"
+  Attribute "NickName" "" "Phomemo M02"
   ModelName "M02"
   PCFileName "Phomemo-M02.ppd"
-  Version 1.0
-  Attribute "NickName" "" "Phomemo M02"
-  DriverType label
-  ColorDevice No
-  Attribute "cupsSNMPSupplies" "" "false"
-  HWMargins 1mm 0 1mm 0
-
-  Filter "application/vnd.cups-raster 100 rastertopm02"
-  *Resolution - 8 0 0 0 203dpi
-  ColorModel Gray/Grayscale w chunky 0
-
-  MediaSize "w50h10"
-  MediaSize "w50h20"
-  MediaSize "w50h25"
-  MediaSize "w50h30"
-  MediaSize "w50h40"
-  MediaSize "w50h50"
-  *MediaSize "w50h60"
-  MediaSize "w50h70"
-  MediaSize "w50h75"
-  MediaSize "w50h80"
-  MediaSize "w50h90"
-  MediaSize "w50h100"
-  MediaSize "w50h110"
-  MediaSize "w50h120"
-  MediaSize "w50h125"
-  MediaSize "w50h130"
-  MediaSize "w50h140"
-  MediaSize "w50h150"
-
-  VariablePaperSize Yes
-  MinSize 0.00 0.00
-  MaxSize 0.00 0.00
+}
+{
+  Attribute "NickName" "" "Phomemo T02"
+  ModelName "T02"
+  PCFileName "Phomemo-T02.ppd"
 }
