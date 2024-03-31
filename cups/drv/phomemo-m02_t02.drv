@@ -1,5 +1,5 @@
 //
-// Driver info file for Phomemo M02
+// Driver info file for Phomemo M02/T02
 //
 // Copyright © 2020 Laurent Vivier <laurent@vivier.eu>
 //
@@ -34,7 +34,7 @@ ColorDevice No
 Attribute "cupsSNMPSupplies" "" "false"
 HWMargins 1mm 0 1mm 0
 
-Filter "application/vnd.cups-raster 100 rastertopm02"
+Filter "application/vnd.cups-raster 100 rastertopm02_t02"
 *Resolution - 8 0 0 0 203dpi
 ColorModel Gray/Grayscale w chunky 0
 
