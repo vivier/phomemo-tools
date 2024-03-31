@@ -20,7 +20,12 @@ def scan_bluetooth():
             continue
 
         properties = interfaces['org.bluez.Device1']
-        name = properties['Name']
+
+        try:
+            name = properties['Name']
+        except KeyError:
+            continue
+
         if (name.startswith('Mr.in')):
             model = name[6:]
         elif (name == 'T02'):
