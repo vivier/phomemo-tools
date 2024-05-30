@@ -5,8 +5,6 @@ import os
 import subprocess
 import dbus
 import socket
-import usb.core
-import usb.util
 
 bus = dbus.SystemBus()
 
@@ -22,10 +20,18 @@ def scan_bluetooth():
             continue
 
         properties = interfaces['org.bluez.Device1']
-        name = properties['Name']
-        if (not name.startswith('Mr.in')):
-                continue
-        model = name[6:]
+
+        try:
+            name = properties['Name']
+        except KeyError:
+            continue
+
+        if (name.startswith('Mr.in')):
+            model = name[6:]
+        elif (name == 'T02'):
+            model = name
+        else:
+            continue
 
         address = properties['Address']
         device_uri = 'phomemo://' + address[0:2:]+address[3:5:]+address[6:8:]+address[9:11:]+address[12:14:]+address[15:17:]
@@ -55,6 +61,12 @@ class find_class(object):
         return False
 
 def scan_usb():
+    try:
+        import usb.core
+        import usb.util
+    except ModuleNotFoundError:
+        print("WARNING: Please install python3-usb to support usb-discovery", file=sys.stderr)
+        return
     printers = usb.core.find(find_all=1, custom_match=find_class(7), idVendor=0x0493)
     for printer in printers:
             for cfg in printer:
@@ -75,6 +87,7 @@ def scan_usb():
             device_make_and_model = 'Phomemo ' + model
             print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
               device_make_and_model + ' USB ' + SerialNumber + '" "' + device_id + model + ' (USB);"')
+
 
 if len(sys.argv) == 1:
     scan_bluetooth()

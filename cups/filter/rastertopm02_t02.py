@@ -100,6 +100,8 @@ for i, datatuple in enumerate(pages):
     if header.cupsColorSpace != 0 or header.cupsNumColors != 1:
         raise ValueError('Invalid color space, only monocolor supported')
 
+    feedLines = header.AdvanceDistance
+
     im = Image.frombuffer(mode='L', data=imgdata,
                           size=(header.cupsWidth, header.cupsHeight))
     im = ImageOps.invert(im)
@@ -114,4 +116,4 @@ for i, datatuple in enumerate(pages):
                 lines = 255
             print_raster(stdout, im, line, lines)
             line += lines
-        print_and_feed(stdout, 2)
+        print_and_feed(stdout, feedLines)

@@ -1,0 +1,80 @@
+//
+// Driver info file for Phomemo M02/T02
+//
+// Copyright © 2020 Laurent Vivier <laurent@vivier.eu>
+//
+
+#include <font.defs>
+#include <media.defs>
+#include <label.h>
+
+#media "w50h10/Label 50mmx25mm" 50mm 10mm
+#media "w50h20/Label 50mmx20mm" 50mm 20mm
+#media "w50h25/Label 50mmx25mm" 50mm 25mm
+#media "w50h30/Label 50mmx30mm" 50mm 30mm
+#media "w50h40/Label 50mmx40mm" 50mm 40mm
+#media "w50h50/Label 50mmx50mm" 50mm 50mm
+#media "w50h60/Label 50mmx60mm" 50mm 60mm
+#media "w50h70/Label 50mmx70mm" 50mm 70mm
+#media "w50h75/Label 50mmx75mm" 50mm 75mm
+#media "w50h80/Label 50mmx80mm" 50mm 80mm
+#media "w50h90/Label 50mmx90mm" 50mm 90mm
+#media "w50h100/Label 50mmx100mm" 50mm 100mm
+#media "w50h110/Label 50mmx110mm" 50mm 110mm
+#media "w50h120/Label 50mmx120mm" 50mm 120mm
+#media "w50h125/Label 50mmx125mm" 50mm 125mm
+#media "w50h130/Label 50mmx130mm" 50mm 130mm
+#media "w50h140/Label 50mmx140mm" 50mm 140mm
+#media "w50h150/Label 50mmx150mm" 50mm 150mm
+
+Manufacturer "Phomemo"
+Version 2.0
+DriverType label
+ColorDevice No
+Attribute "cupsSNMPSupplies" "" "false"
+HWMargins 1mm 0 1mm 0
+
+Filter "application/vnd.cups-raster 100 rastertopm02_t02"
+*Resolution - 8 0 0 0 203dpi
+ColorModel Gray/Grayscale w chunky 0
+
+MediaSize "w50h10"
+MediaSize "w50h20"
+MediaSize "w50h25"
+MediaSize "w50h30"
+MediaSize "w50h40"
+MediaSize "w50h50"
+*MediaSize "w50h60"
+MediaSize "w50h70"
+MediaSize "w50h75"
+MediaSize "w50h80"
+MediaSize "w50h90"
+MediaSize "w50h100"
+MediaSize "w50h110"
+MediaSize "w50h120"
+MediaSize "w50h125"
+MediaSize "w50h130"
+MediaSize "w50h140"
+MediaSize "w50h150"
+
+VariablePaperSize Yes
+MinSize 0.00 0.00
+MaxSize 0.00 0.00
+
+Option "FeedLines/Feed Lines for Tearing" PickOne DocumentSetup 20.0
+Attribute CustomFeedLines True "<</AdvanceDistance 3 -1 roll>>setpagedevice"
+Attribute ParamCustomFeedLines Lines "1 int 0 20"
+{
+  Attribute "NickName" "" "Phomemo M02"
+  ModelName "M02"
+  PCFileName "Phomemo-M02.ppd"
+  Option "FeedLines" PickOne DocumentSetup 20.0
+  *Choice "Default/Default (2)" "<</AdvanceDistance 2>>setpagedevice"
+}
+{
+  Attribute "NickName" "" "Phomemo T02"
+  ModelName "T02"
+  PCFileName "Phomemo-T02.ppd"
+  Option "FeedLines" PickOne DocumentSetup 20.0
+  *Choice "Default/Default (4)" "<</AdvanceDistance 4>>setpagedevice"
+}
