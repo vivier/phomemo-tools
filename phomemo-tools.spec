@@ -11,7 +11,6 @@ BuildRequires: cups
 Requires: cups
 Requires: python3
 Requires: python3-pillow
-Requires: python3-pybluez
 Requires: python3-pyusb
 
 %description
@@ -37,10 +36,12 @@ make DESTDIR=%{buildroot} install
 /usr/share/phomemo/phomemo-filter.py
 /usr/share/phomemo/format-checker.py
 /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
+/usr/share/cups/model/Phomemo/Phomemo-T02.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
-/usr/share/cups/drv/phomemo-m02.drv
+/usr/share/cups/drv/phomemo-m02_t02.drv
 /usr/share/cups/drv/phomemo-m110.drv
-/usr/lib/cups/filter/rastertopm02
+/usr/lib/cups/filter/rastertopm02_t02
+/usr/lib/cups/filter/rastertopm110
 /usr/lib/cups/backend/phomemo
 
 %changelog
