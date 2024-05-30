@@ -29,6 +29,11 @@ make all
 
 make DESTDIR=%{buildroot} install
 
+%post
+# Needed to fix the following error:
+# cupsd[2659]: Can\'t open Bluetooth connection: [Errno 13] Permission denied
+semanage permissive -a cupsd_t
+
 %files
 /usr/share/phomemo/LICENSE
 /usr/share/phomemo/README.md
