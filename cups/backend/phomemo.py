@@ -10,8 +10,13 @@ bus = dbus.SystemBus()
 
 device_id = 'CLS:PRINTER;CMD:EPSON;DES:Thermal Printer;MFG:Phomemo;MDL:'
 def scan_bluetooth():
-    manager = dbus.Interface(bus.get_object('org.bluez', '/'),
-                             'org.freedesktop.DBus.ObjectManager')
+    try:
+        bluez = bus.get_object('org.bluez', '/')
+    except dbus.exceptions.DBusException:
+        print("WARNING: no bluetooth interface", file=sys.stderr)
+        return
+
+    manager = dbus.Interface(bluez, 'org.freedesktop.DBus.ObjectManager')
 
     objects = manager.GetManagedObjects()
 
