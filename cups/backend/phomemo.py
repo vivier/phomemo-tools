@@ -61,12 +61,6 @@ class find_class(object):
         return False
 
 def scan_usb():
-    try:
-        import usb.core
-        import usb.util
-    except ModuleNotFoundError:
-        print("WARNING: Please install python3-usb to support usb-discovery", file=sys.stderr)
-        return
     printers = usb.core.find(find_all=1, custom_match=find_class(7), idVendor=0x0493)
     for printer in printers:
             for cfg in printer:
@@ -91,6 +85,12 @@ def scan_usb():
 
 if len(sys.argv) == 1:
     scan_bluetooth()
+    try:
+        import usb.core
+        import usb.util
+    except ModuleNotFoundError:
+        print("WARNING: Please install python3-usb to support usb-discovery", file=sys.stderr)
+        exit(0)
     scan_usb()
     exit(0)
 
