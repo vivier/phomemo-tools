@@ -93,6 +93,7 @@ be sure to install the required dependencies, for instance with Fedora:
 
 ```
    $ sudo dnf install python3-devel
+   $ dudo dnf install bluez-libs-devel
    $ sudo pip install pybluez
 ```
 
