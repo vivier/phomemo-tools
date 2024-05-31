@@ -5,6 +5,7 @@ import os
 import subprocess
 import dbus
 import socket
+from urllib.parse import quote
 
 bus = dbus.SystemBus()
 
@@ -82,7 +83,7 @@ def scan_usb():
                 model = 'Unknown(0x%04x)' % (printer.idProduct)
             usb.util.get_langids(printer)
             SerialNumber = usb.util.get_string(printer, printer.iSerialNumber)
-            device_uri = 'usb://Unknown/Printer?serial=%s&interface=%d' % (SerialNumber, Interface)
+            device_uri = 'usb://%s/%s?serial=%s&interface=%d' % (quote(printer.manufacturer), quote(printer.product), SerialNumber, Interface)
             device_make_and_model = 'Phomemo ' + model
             print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
               device_make_and_model + ' USB ' + SerialNumber + '" "' + device_id + model + ' (USB);"')
