@@ -121,10 +121,18 @@ try:
     sock.connect((bdaddr, 1))
     print('STATE: +sending-data')
     with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
-        sent = sock.send(stdin.read())
-        print('DEBUG: sent %d' % (sent))
+        while True:
+            data = stdin.read(8192)
+            size = len(data)
+            if size == 0:
+                break
+            sock.sendall(data)
+            print('DEBUG: sent %d' % (size))
 except OSError as btErr:
     print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
+    exit(1)
+except socket.error as SockErr:
+    print("ERROR: Cannot write data: " + str(SockErr), file=sys.stderr)
     exit(1)
 try:
     # we need to wait the printer answer before closing the socket
