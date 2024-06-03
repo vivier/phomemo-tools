@@ -1,5 +1,5 @@
 Name: phomemo-tools
-Version: 1.0
+Version: 2.0
 Release: 1%{?dist}
 Summary: A set of tools to use Phomemo M02 printer
 License: GPLv3
@@ -50,5 +50,8 @@ semanage permissive -a cupsd_t
 /usr/lib/cups/backend/phomemo
 
 %changelog
+* Mon Jun 3 2024 Laurent Vivier <laurent@vivier.eu> - 1.1
+- Add M220 and T02
+- Several fixes
 * Fri Dec 4 2020 Laurent Vivier <laurent@vivier.eu> - 1.0
 - First package

@@ -1,5 +1,5 @@
 NAME = phomemo-tools
-VERSION = 1.0
+VERSION = 2.0
 
 FILES = Makefile
 FILES += phomemo-tools.spec
