@@ -15,13 +15,20 @@ python3-pybluez and phomemo-tools CUPS driver can be found at
 * connection
 
 ```
-$ hcitool scan
-Scanning ...
-  DC:0D:30:90:23:C7	Mr.in_M02
+$ bluetoothctl devices
+Device DC:0D:30:90:23:C7 Mr.in_M02
+$ bluetoothctl pair DC:0D:30:90:23:C7
+Attempting to pair with DC:0D:30:90:23:C7
+[CHG] Device DC:0D:30:90:23:C7 Connected: yes
+[CHG] Device DC:0D:30:90:23:C7 Bonded: yes
+[CHG] Device DC:0D:30:90:23:C7 ServicesResolved: yes
+[CHG] Device DC:0D:30:90:23:C7 Paired: yes
+Pairing successful
 $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   Connected /dev/rfcomm0 to DC:0D:30:90:23:C7 on channel 1
   Press CTRL-C for hangup
 ```
+
 * Send the picture to the printer (the python script currently only works with M02 printers):
 
 ```
@@ -76,9 +83,13 @@ You need to be root or in the lp group
 
 ### 2.1. Installation
 
+On Debian you can have to install cups:
 ```
   $ sudo apt-get update
   $ sudo apt-get -y install cups
+```
+Then you can build and install phomemo-tools files:
+```
   $ cd cups
   $ make
   $ sudo make install
@@ -88,16 +99,13 @@ You need to be root or in the lp group
 #### 2.2.1. GUI
 ##### 2.2.2.1.1. Pre-requisite
 
-The CUPS backend (phomemo) uses the Python pyBluez to connect to the printer, so
-be sure to install the required dependencies, for instance with Fedora:
-
+To connect using USB, you need python3-pyusb.
+For instance, on Fedora:
 ```
-   $ sudo dnf install python3-devel
-   $ dudo dnf install bluez-libs-devel
-   $ sudo pip install pybluez
+   $ sudo dnf install python3-pyusb
 ```
 
-SELinux seems to prevent the backend to create a bluetooth socket.
+On Fedora, SELinux seems to prevent the backend to create a bluetooth socket.
 If you have such error message in your syslog:
 
 ```
