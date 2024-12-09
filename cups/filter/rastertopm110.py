@@ -61,10 +61,6 @@ def read_ras3(rdata):
 
     return pages
 
-def printer_init(file):
-    file.write(ESC + b'@') # initialize printer
-    return
-
 def select_speed(file, speed = 5):
     file.write(ESC + b'\x4e' + b'\x0d') # select Print Speed
     file.write(speed.to_bytes(1, 'little'))
@@ -81,7 +77,6 @@ def select_media_type(file, media_type):
     return
 
 def print_header(file, media_type = 10):
-    printer_init(file)
     select_speed(file, 5)
     select_density(file, 10)
     select_media_type(file, media_type)
@@ -118,12 +113,9 @@ for i, datatuple in enumerate(pages):
     im = im.convert('1')
 
     line = 0
+    
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
         print_header(stdout,header.cupsMediaType)
-        while line < im.height:
-            lines = im.height - line
-            if lines > 255:
-                lines = 255
-            print_raster(stdout, im, line, lines)
-            line += lines
+        lines = im.height
+        print_raster(stdout, im, line, lines)
         print_footer(stdout) 
