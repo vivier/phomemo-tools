@@ -1,7 +1,7 @@
 # Phomemo-tools
 
 This package is trying to provide tools to print pictures using
-the Phomemo M02, M110, M120 and M220 thermal printers from Linux.
+the Phomemo M02, M110, M120, M220 and T02 thermal printers from Linux.
 
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
@@ -44,7 +44,7 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
 ```
   $ lsusb
   ...
-  Bus 003 Device 013: ID 0493:b002 MAG Technology Co., Ltd 
+  Bus 003 Device 013: ID 0493:b002 MAG Technology Co., Ltd
   ...
 ```
 You can see the serial port in the dmesg and in /dev:
@@ -118,7 +118,7 @@ You might need to disable SELinux enforcement to allow the backend to run correc
 ```
 
 I didn't find a way to define correctly the SELinux rules to allow the backend
-to use bluetooth socket without to change the enforcement mode 
+to use bluetooth socket without to change the enforcement mode
 (the couple ausearch/audit2allow doesn't fix the problem).
 
 ##### 2.2.2.1.1. Pair the printer
@@ -234,7 +234,7 @@ After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
   0x1b 0x61      -> command ESC a: select justification
   0x01           range: 0 (left-justification), 1 centered,
                         2 (right justification)
-  0x1f 0x11 0x02 0x04           
+  0x1f 0x11 0x02 0x04
 ```
 
 ### 3.2. BLOCK MARKER
@@ -245,7 +245,7 @@ After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
   0x30 0x00         16bit, little-endian: number of bytes / line (48)
   0xff 0x00         16bit, little-endian: number of lines in the image (255)
 ```
-  
+
   Values seem to be 16bit little-endian
 
   If the picture is not finished, a new block marker must be sent with
@@ -274,20 +274,20 @@ After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
 1a 04 5a
 1a 09 0c
 1a 07 01 00 00
-1a 08 
+1a 08
 51 30 30 31 45 30 XX XX XX XX XX XX XX XX XX -> Serial Numer: E05C0XXXXXX
 ```
 
 ## 4. Protocol for M110/M120/M220
 
-Dumpping USB packets. 
+Dumpping USB packets.
 
 ### 4.1. HEADER
 
 ```
   0x1b 0x4e 0x0d  -> Print Speed
   0x05            range: 0x01 (Slow) -  0x05 (Fast)
-  0x1b 0x4e 0x04  -> Print Density 
+  0x1b 0x4e 0x04  -> Print Density
   0x0f            range: 01 - 0f
   0x1f  0x11      -> Media Type
   0x0a            Mode: 0a="Label With Gaps" 0b="Continuas" 26="Label With Marks"
@@ -306,6 +306,6 @@ Dumpping USB packets.
 ### 4.3. FOOTER
 
 ```
-  0x1f 0xf0 0x05 0x00 
+  0x1f 0xf0 0x05 0x00
   0x1f 0xf0 0x03 0x00
 ```
