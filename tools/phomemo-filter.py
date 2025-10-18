@@ -1,8 +1,14 @@
 #! /usr/bin/python3
 
-import getopt, sys, os
+"""Send the picture to a printer."""
+
+import argparse
+import getopt
+import os
+import sys
 
 from PIL import Image
+
 
 def print_header():
     with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
@@ -41,38 +47,23 @@ def print_line(image, line):
             stdout.write(byte.to_bytes(1, 'little'))
     return
 
-def usage():
-    print("%s [-h|--help] filename" % (sys.argv[0]))
-    return
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--no-rotate", action="store_true", help="Disable auto-rotation of the image")
+parser.add_argument("file")
+
+args = parser.parse_args()
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "h", ["help"])
-except getopt.error as err:
-    print (str(err))
-    usage()
-    sys.exit(1)
-
-for opt, arg in opts:
-    if opt in ("-h", "--help"):
-        usage()
-        sys.exit()
-
-try:
-    name = sys.argv[1]
+    image = Image.open(args.file)
 except:
-    print("Missing filename")
-    usage()
-    sys.exit(1)
-
-try:
-    image = Image.open(name)
-except:
-    print("Cannot open file %s" % (name))
-    usage()
+    print("Cannot open file", args.file)
+    parser.print_usage()
     sys.exit(2)
 
-if image.width > image.height:
-    image = image.transpose(Image.ROTATE_90)
+if not args.no_rotate:
+    if image.width > image.height:
+        image = image.transpose(Image.ROTATE_90)
 
 # width 384 dots
 image = image.resize(size=(384, int(image.height * 384 / image.width)))
