@@ -83,12 +83,16 @@ You need to be root or in the lp group
 
 ### 2.1. Installation
 
-On Debian you can have to install cups:
+On Debian you have to install cups:
 ```
   $ sudo apt-get update
-  $ sudo apt-get -y install cups
+  $ sudo apt-get install cups
 ```
-Then you can build and install phomemo-tools files:
+Next you need to ensure the required dependencies are installed (if this is skipped you will see a 'Filter Failure' error when trying to print):
+```
+  $ sudo apt-get install python3-pil python3-pyusb
+```
+Finally once you are in the folder containing your copy of this repository you can build and install phomemo-tools files:
 ```
   $ cd cups
   $ make
