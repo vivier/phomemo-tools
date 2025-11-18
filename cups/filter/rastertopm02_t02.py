@@ -97,7 +97,7 @@ pages = read_ras3(sys.stdin.buffer.read())
 for i, datatuple in enumerate(pages):
     (header, imgdata) = datatuple
 
-    if header.cupsColorSpace != 0 or header.cupsNumColors != 1:
+    if header.cupsNumColors != 1:
         raise ValueError('Invalid color space, only monocolor supported')
 
     feedLines = header.AdvanceDistance
