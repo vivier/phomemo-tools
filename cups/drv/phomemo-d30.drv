@@ -1,0 +1,41 @@
+//
+// Driver info file for Phomemo M02/T02
+//
+// Copyright © 2020 Laurent Vivier <laurent@vivier.eu>
+//
+
+#include <font.defs>
+#include <media.defs>
+#include <label.h>
+
+#media "w40h12/Label 12mmx40mm" 40mm 12mm
+#media "w30h14/Label 14mmx30mm" 30mm 14mm
+
+Manufacturer "Phomemo"
+Version 2.0
+DriverType label
+ColorDevice No
+Attribute "cupsSNMPSupplies" "" "false"
+HWMargins 1mm 0 1mm 0
+
+Filter "application/vnd.cups-raster 100 rastertopd30"
+*Resolution - 8 0 0 0 203dpi
+ColorModel Gray/Grayscale w chunky 0
+
+*MediaSize "w40h12"
+MediaSize "w30h14"
+
+VariablePaperSize Yes
+MinSize 0.00 0.00
+MaxSize 0.00 0.00
+
+Option "FeedLines/Feed Lines for Tearing" PickOne DocumentSetup 20.0
+Attribute CustomFeedLines True "<</AdvanceDistance 3 -1 roll>>setpagedevice"
+Attribute ParamCustomFeedLines Lines "1 int 0 20"
+{
+  Attribute "NickName" "" "Phomemo D30"
+  ModelName "D30"
+  PCFileName "Phomemo-D30.ppd"
+  Option "FeedLines" PickOne DocumentSetup 20.0
+  *Choice "Default/Default (2)" "<</AdvanceDistance 2>>setpagedevice"
+}
