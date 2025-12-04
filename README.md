@@ -83,6 +83,12 @@ You need to be root or in the lp group
 
 ### 2.1. Installation
 
+On Fedora, the `phomemo-tools` RPM is available from COPR:
+```
+  $ sudo dnf copr enable lvivier/phomemo-tools
+  $ sudo dnf install phomemo-tools
+```
+
 On Debian you have to install cups:
 ```
   $ sudo apt-get update
