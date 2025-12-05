@@ -7,6 +7,7 @@ License: GPLv3
 Source: %{name}-%{version}.tar.xz
 BuildArch: noarch
 BuildRequires: cups
+BuildRequires: make
 
 Requires: cups
 Requires: python3
