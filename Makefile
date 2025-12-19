@@ -1,10 +1,11 @@
 NAME = phomemo-tools
-VERSION = 2.1
+VERSION = 2.2
 
 FILES = Makefile
 FILES += phomemo-tools.spec
 FILES += LICENSE
 FILES += README.md
+FILES += images
 FILES += tools/Makefile
 FILES += tools/format-checker.py
 FILES += tools/phomemo-filter.py
@@ -29,6 +30,7 @@ all:
 install:
 	install -Dm 0644 README.md -t $(DESTDIR)/usr/share/phomemo/
 	install -Dm 0644 LICENSE -t $(DESTDIR)/usr/share/phomemo/
+	cp -a images $(DESTDIR)/usr/share/phomemo/
 	make -C tools install
 	make -C cups install
 	make -C glabels install
