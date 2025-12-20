@@ -8,7 +8,7 @@
 #include <media.defs>
 #include <label.h>
 
-#media "w50h10/Label 50mmx25mm" 50mm 10mm
+#media "w50h10/Label 50mmx10mm" 50mm 10mm
 #media "w50h20/Label 50mmx20mm" 50mm 20mm
 #media "w50h25/Label 50mmx25mm" 50mm 25mm
 #media "w50h30/Label 50mmx30mm" 50mm 30mm
