@@ -48,11 +48,13 @@ semanage permissive -a cupsd_t
 /usr/share/phomemo/phomemo-filter.py
 /usr/share/phomemo/format-checker.py
 /usr/share/cups/model/Phomemo/Phomemo-M02.ppd.gz
+/usr/share/cups/model/Phomemo/Phomemo-M02Pro.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-T02.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-D30.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M220.ppd.gz
 /usr/share/cups/drv/phomemo-m02_t02.drv
+/usr/share/cups/drv/phomemo-m02pro.drv
 /usr/share/cups/drv/phomemo-m110.drv
 /usr/share/cups/drv/phomemo-d30.drv
 /usr/share/cups/drv/phomemo-m220.drv

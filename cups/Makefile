@@ -5,7 +5,9 @@ ppds:
 
 install:
 	install -D drv/phomemo-m02_t02.drv -t $(DESTDIR)/usr/share/cups/drv/
+	install -D drv/phomemo-m02pro.drv -t $(DESTDIR)/usr/share/cups/drv/
 	install -D ppd/Phomemo-M02.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
+	install -D ppd/Phomemo-M02Pro.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
 	install -D ppd/Phomemo-T02.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
 	install -D ppd/Phomemo-D30.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
 	install -D drv/phomemo-m110.drv -t $(DESTDIR)/usr/share/cups/drv/
