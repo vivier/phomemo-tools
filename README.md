@@ -6,9 +6,6 @@ the Phomemo M02, M110, M120, M220 and T02 thermal printers from Linux.
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
 
-python3-pybluez and phomemo-tools CUPS driver can be found at
-[phomemo-tools RPM](http://vivier.eu/phomemo-tools/)
-
 ## License
 
 This project is licensed under the GNU General Public License v3.
@@ -126,13 +123,6 @@ Finally once you are in the folder containing your copy of this repository you c
 #### 2.2.1. GUI
 
 ##### 2.2.2.1.1. Pre-requisite
-
-To connect using USB, you need python3-pyusb.
-For instance, on Fedora:
-
-```
-   $ sudo dnf install python3-pyusb
-```
 
 On Fedora, SELinux seems to prevent the backend to create a bluetooth socket.
 If you have such error message in your syslog:
