@@ -304,6 +304,11 @@ They do not have a human author in the sense of copyright law.
 | <img src="images/christmas/Christmas2.png" title="" alt="Christmas2.png" width="303"> | <img src="images/christmas/Christmas4.png" title="" alt="Christmas4.png" width="309"> |
 | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 
+| <img src="images/christmas/Christmas tree.png" title="" alt="Christmas tree.png" width="260">   | <img src="images/christmas/Elf.png" title="" alt="Elf.png" width="260">                 | <img src="images/christmas/Reindeer.png" title="" alt="Reindeer.png" width="260">             |
+| ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| <img src="images/christmas/Santa Claus.png" title="" alt="Santa Claus.png" width="260">         | <img src="images/christmas/Santa's bag.png" title="" alt="Santa's bag.png" width="260"> | <img src="images/christmas/Santa’s sleigh.png" title="" alt="Santa’s sleigh.png" width="260"> |
+| <img src="images/christmas/Santa’s sleigh2.png" title="" alt="Santa’s sleigh2.png" width="260"> | <img src="images/christmas/Snowflake.png" title="" alt="Snowflake.png" width="260">     |                                                                                               |
+
 ### 3.5. Everyday
 
 | <img src="images/everyday/Alarm Clock.png" title="" alt="Alarm Clock.png" width="180">       | <img src="images/everyday/Cleaning Tools.png" title="" alt="Cleaning Tools.png" width="180"> | <img src="images/everyday/Coffee.png" title="" alt="Coffee.png" width="180">                   |
