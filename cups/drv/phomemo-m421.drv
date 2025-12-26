@@ -1,0 +1,99 @@
+//
+// Driver info file for Phomemo M421
+//
+// Copyright © 2025 Yury Chuyko <code@mrgr.net>
+//
+
+#include <font.defs>
+#include <media.defs>
+#include <label.h>
+
+#media "w40h15/Label 40x15mm" 40mm 15mm
+#media "w40h20/Label 40x20mm" 40mm 20mm
+#media "w40h30/Label 40x30mm" 40mm 30mm
+#media "w40h40/Label 40x40mm" 40mm 40mm
+#media "w40h60/Label 40x60mm" 40mm 60mm
+#media "w40h70/Label 40x70mm" 40mm 70mm
+#media "w40h80/Label 40x80mm" 40mm 80mm
+
+#media "w45h15/Label 45x15mm" 45mm 15mm
+#media "w45h20/Label 45x20mm" 45mm 20mm
+#media "w45h60/Label 45x60mm" 45mm 60mm
+#media "w45h80/Label 45x80mm" 45mm 80mm
+
+#media "w50h15/Label 50x15mm" 50mm 15mm
+#media "w50h20/Label 50x20mm" 50mm 20mm
+#media "w50h30/Label 50x30mm" 50mm 30mm
+#media "w50h50/Label 50x50mm" 50mm 50mm
+#media "w50h70/Label 50x70mm" 50mm 70mm
+#media "w50h80/Label 50x80mm" 50mm 80mm
+
+#media "w60h40/Label 60x40mm" 60mm 40mm
+#media "w60h60/Label 60x60mm" 60mm 60mm
+#media "w60h80/Label 60x80mm" 60mm 80mm
+#media "w60h86/Label 60x86mm" 60mm 86mm
+
+#media "w62h100/Label 62x100mm" 62mm 100mm
+
+#media "w70h40/Label 70x40mm" 70mm 40mm
+#media "w70h70/Label 70x70mm" 70mm 70mm
+#media "w70h80/Label 70x80mm" 70mm 80mm
+
+#media "w4h6/Label 4x6in" 4in 6in
+
+{
+  Manufacturer "Phomemo"
+  ModelName "M421"
+  PCFileName "Phomemo-M421.ppd"
+  Version 1.0
+  Attribute "NickName" "" "Phomemo M421"
+  DriverType label
+  ColorDevice No
+  Attribute "cupsSNMPSupplies" "" "false"
+  HWMargins 1mm 0 1mm 0
+
+  Filter "application/vnd.cups-raster 100 rastertopm110"
+  *Resolution - 8 0 0 0 203dpi
+  ColorModel Gray/Grayscale w chunky 0
+
+  *MediaType 10 "LabelWithGaps/Label With Gaps"
+  MediaType 11 "Continuous"
+  MediaType 38 "LabelWithMarks/Label With Marks"
+
+  MediaSize "w40h15"
+  MediaSize "w40h20"
+  MediaSize "w40h30"
+  MediaSize "w40h40"
+  MediaSize "w40h60"
+  MediaSize "w40h70"
+  MediaSize "w40h80"
+
+  MediaSize "w45h15"
+  MediaSize "w45h20"
+  MediaSize "w45h60"
+  MediaSize "w45h80"
+
+  MediaSize "w50h15"
+  MediaSize "w50h20"
+  MediaSize "w50h30"
+  MediaSize "w50h50"
+  MediaSize "w50h70"
+  MediaSize "w50h80"
+
+  MediaSize "w60h40"
+  MediaSize "w60h60"
+  MediaSize "w60h80"
+  MediaSize "w60h86"
+
+  MediaSize "w62h100"
+
+  MediaSize "w70h40"
+  MediaSize "w70h70"
+  MediaSize "w70h80"
+
+  *MediaSize "w4h6"
+
+  VariablePaperSize Yes
+  MinSize 0.00 0.00
+  MaxSize 0.00 0.00
+}
