@@ -1,5 +1,5 @@
 Name: phomemo-tools
-Version: 2.2
+Version: 2.3
 Release: 1%{?dist}
 Summary: A set of tools to use Phomemo M02 printer
 License: GPLv3
@@ -53,11 +53,13 @@ semanage permissive -a cupsd_t
 /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-D30.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M220.ppd.gz
+/usr/share/cups/model/Phomemo/Phomemo-M421.ppd.gz
 /usr/share/cups/drv/phomemo-m02_t02.drv
 /usr/share/cups/drv/phomemo-m02pro.drv
 /usr/share/cups/drv/phomemo-m110.drv
 /usr/share/cups/drv/phomemo-d30.drv
 /usr/share/cups/drv/phomemo-m220.drv
+/usr/share/cups/drv/phomemo-m421.drv
 /usr/lib/cups/filter/rastertopm02_t02
 /usr/lib/cups/filter/rastertopm110
 /usr/lib/cups/filter/rastertopd30
