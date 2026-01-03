@@ -50,6 +50,7 @@ def print_line(image, line):
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--no-rotate", action="store_true", help="Disable auto-rotation of the image")
+parser.add_argument("-V", "--version", action="version", version=f"%(prog)s @@VERSION@@")
 parser.add_argument("file")
 
 args = parser.parse_args()

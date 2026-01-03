@@ -33,6 +33,7 @@ install:
 	install -Dm 0644 README.md -t $(DESTDIR)/usr/share/phomemo/
 	install -Dm 0644 LICENSE -t $(DESTDIR)/usr/share/phomemo/
 	cp -a images $(DESTDIR)/usr/share/phomemo/
+	PHOMEMO_VERSION=$(VERSION) make -C tools version
 	make -C tools install
 	make -C cups install
 	make -C glabels install
