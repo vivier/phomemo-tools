@@ -1,0 +1,13 @@
+# Phomemo Tools - macOS Python Dependencies
+# Install with: pip3 install -r requirements-macos.txt
+
+# Core dependencies (same as requirements.txt)
+pillow>=9.0.0
+pyusb>=1.2.0
+
+# PyObjC for IOBluetooth support on macOS
+# These provide native Bluetooth RFCOMM connectivity
+pyobjc-core>=9.0
+pyobjc-framework-Cocoa>=9.0
+pyobjc-framework-IOBluetooth>=9.0
+pyobjc-framework-CoreBluetooth>=9.0

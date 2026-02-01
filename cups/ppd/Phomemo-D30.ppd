@@ -1,0 +1,74 @@
+*PPD-Adobe: "4.3"
+*%%%% PPD file for D30 with CUPS.
+*%%%% Created by the CUPS PPD Compiler CUPS v2.3.4.
+*FormatVersion: "4.3"
+*FileVersion: "2.0"
+*LanguageVersion: English
+*LanguageEncoding: ISOLatin1
+*PCFileName: "Phomemo-D30.ppd"
+*Product: "(D30)"
+*Manufacturer: "Phomemo"
+*ModelName: "Phomemo D30"
+*ShortNickName: "Phomemo D30"
+*NickName: "Phomemo D30"
+*PSVersion: "(3010.000) 0"
+*LanguageLevel: "3"
+*ColorDevice: False
+*DefaultColorSpace: Gray
+*FileSystem: False
+*Throughput: "1"
+*LandscapeOrientation: Plus90
+*TTRasterizer: Type42
+*% Driver-defined attributes...
+*cupsSNMPSupplies: "false"
+*cupsVersion: 2.3
+*cupsModelNumber: 0
+*cupsManualCopies: False
+*cupsFilter: "application/vnd.cups-raster 100 rastertopd30"
+*cupsLanguages: "en"
+*OpenUI *PageSize/Media Size: PickOne
+*OrderDependency: 10 AnySetup *PageSize
+*DefaultPageSize: w40h12
+*PageSize w40h12/Label 12mmx40mm: "<</PageSize[113 34]/ImagingBBox null>>setpagedevice"
+*PageSize w30h14/Label 14mmx30mm: "<</PageSize[85 40]/ImagingBBox null>>setpagedevice"
+*CloseUI: *PageSize
+*OpenUI *PageRegion/Media Size: PickOne
+*OrderDependency: 10 AnySetup *PageRegion
+*DefaultPageRegion: w40h12
+*PageRegion w40h12/Label 12mmx40mm: "<</PageSize[113 34]/ImagingBBox null>>setpagedevice"
+*PageRegion w30h14/Label 14mmx30mm: "<</PageSize[85 40]/ImagingBBox null>>setpagedevice"
+*CloseUI: *PageRegion
+*DefaultImageableArea: w40h12
+*ImageableArea w40h12/Label 12mmx40mm: "2.834645748138 0 110.55118560791 34.015747070312"
+*ImageableArea w30h14/Label 14mmx30mm: "2.834645748138 0 82.204727172852 39.685039520264"
+*DefaultPaperDimension: w40h12
+*PaperDimension w40h12/Label 12mmx40mm: "113.385833740234 34.015747070312"
+*PaperDimension w30h14/Label 14mmx30mm: "85.039375305176 39.685039520264"
+*MaxMediaWidth: "0"
+*MaxMediaHeight: "0"
+*HWMargins: 2.834645748138 0 2.834645748138 0
+*CustomPageSize True: "pop pop pop <</PageSize[5 -2 roll]/ImagingBBox null>>setpagedevice"
+*ParamCustomPageSize Width: 1 points 0 0
+*ParamCustomPageSize Height: 2 points 0 0
+*ParamCustomPageSize WidthOffset: 3 points 0 0
+*ParamCustomPageSize HeightOffset: 4 points 0 0
+*ParamCustomPageSize Orientation: 5 int 0 0
+*OpenUI *Resolution/Resolution: PickOne
+*OrderDependency: 10 AnySetup *Resolution
+*DefaultResolution: 203dpi
+*Resolution 203dpi/203dpi: "<</HWResolution[203 203]/cupsBitsPerColor 8/cupsRowCount 0/cupsRowFeed 0/cupsRowStep 0>>setpagedevice"
+*CloseUI: *Resolution
+*OpenUI *ColorModel/Color Mode: PickOne
+*OrderDependency: 10 AnySetup *ColorModel
+*DefaultColorModel: Gray
+*ColorModel Gray/Grayscale: "<</cupsColorSpace 0/cupsColorOrder 0/cupsCompression 0>>setpagedevice"
+*CloseUI: *ColorModel
+*OpenUI *FeedLines/Feed Lines for Tearing: PickOne
+*OrderDependency: 20 DocumentSetup *FeedLines
+*DefaultFeedLines: Default
+*FeedLines Default/Default (2): "<</AdvanceDistance 2>>setpagedevice"
+*CloseUI: *FeedLines
+*CustomFeedLines True: "<</AdvanceDistance 3 -1 roll>>setpagedevice"
+*ParamCustomFeedLines Lines/Lines: 1 int 0 20
+*DefaultFont: Courier
+*% End of Phomemo-D30.ppd, 03020 bytes.

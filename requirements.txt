@@ -1,0 +1,5 @@
+# Phomemo Tools - Python Dependencies
+# Common requirements for all platforms
+
+pillow>=9.0.0
+pyusb>=1.2.0

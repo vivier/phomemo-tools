@@ -1,0 +1,14 @@
+# Phomemo Tools - Linux Python Dependencies
+# Install with: pip3 install -r requirements-linux.txt
+
+# Core dependencies
+pillow>=9.0.0
+pyusb>=1.2.0
+
+# D-Bus for BlueZ Bluetooth support
+# Note: dbus-python typically comes from system packages:
+#   Debian/Ubuntu: apt install python3-dbus
+#   Fedora: dnf install python3-dbus
+#
+# If needed via pip:
+# dbus-python>=1.2.0

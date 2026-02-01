@@ -1,0 +1,116 @@
+#!/bin/bash
+#
+# phomemo-bt-socket - CUPS backend for Phomemo Bluetooth printers via helper daemon
+#
+# This backend communicates with the phomemo-bt-helper daemon via Unix socket.
+# Uses bash and nc (netcat) to avoid Python sandbox issues.
+
+SOCKET_PATH="/tmp/phomemo-bt.sock"
+
+# Debug logging
+log() {
+    echo "DEBUG: $*" >&2
+}
+
+error() {
+    echo "ERROR: $*" >&2
+}
+
+# Convert number to 4-byte big-endian binary
+uint32_be() {
+    local n=$1
+    printf "\\x$(printf '%02x' $(( (n >> 24) & 0xff )))"
+    printf "\\x$(printf '%02x' $(( (n >> 16) & 0xff )))"
+    printf "\\x$(printf '%02x' $(( (n >> 8) & 0xff )))"
+    printf "\\x$(printf '%02x' $(( n & 0xff )))"
+}
+
+# Discovery mode - list available printers (simplified, returns nothing in sandbox)
+list_devices() {
+    # Can't run Python in CUPS sandbox, so discovery is limited
+    # Users should add printers manually with the phomemo-bt:// URI
+    :
+}
+
+# Print job
+print_job() {
+    local device_uri="$DEVICE_URI"
+    local job_id="$1"
+    local user="$2"
+    local title="$3"
+    local copies="$4"
+    local options="$5"
+    local file="$6"
+
+    log "Print job starting, URI: $device_uri"
+
+    # Parse Bluetooth address from URI: phomemo-bt://XX-XX-XX-XX-XX-XX
+    local address="${device_uri#phomemo-bt://}"
+    log "Bluetooth address: $address"
+
+    # Check if helper socket exists
+    if [ ! -S "$SOCKET_PATH" ]; then
+        error "Helper daemon not running. Please start it first:"
+        error "  launchctl load ~/Library/LaunchAgents/com.phomemo.bt-helper.plist"
+        return 1
+    fi
+
+    # Create temp file for print data
+    local tmpfile="/var/spool/cups/tmp/phomemo-$$"
+    if [ -n "$file" ] && [ -f "$file" ]; then
+        cp "$file" "$tmpfile"
+    else
+        cat > "$tmpfile"
+    fi
+
+    local data_size=$(stat -f%z "$tmpfile" 2>/dev/null || echo "0")
+    log "Data size: $data_size bytes"
+
+    # Create request: 4-byte length + address
+    local addr_len=${#address}
+    local header_file="/var/spool/cups/tmp/phomemo-hdr-$$"
+    uint32_be $addr_len > "$header_file"
+    printf "%s" "$address" >> "$header_file"
+
+    # Send to helper via nc
+    # The helper daemon handles connection and data transfer
+    # We send header+address followed by print data, then close
+    (cat "$header_file"; sleep 0.3; cat "$tmpfile") | nc -U "$SOCKET_PATH" >/dev/null 2>&1 &
+    local nc_pid=$!
+
+    # Wait for nc to finish (data sent when nc exits)
+    wait $nc_pid 2>/dev/null
+    local result=$?
+
+    rm -f "$tmpfile" "$header_file"
+
+    # nc exit codes:
+    # 0 = success
+    # 141 = SIGPIPE (128+13) - server closed connection, data was sent
+    # Other = actual error
+    if [ $result -eq 0 ] || [ $result -eq 141 ]; then
+        log "Data sent to helper daemon (nc exit: $result)"
+        echo "STATE: +cups-waiting-for-job-completed" >&2
+        log "Print job complete"
+        return 0
+    else
+        error "Failed to connect to helper daemon (nc exit: $result)"
+        return 1
+    fi
+}
+
+# Main
+case $# in
+    0)
+        # Discovery mode
+        list_devices
+        ;;
+    5|6)
+        # Print job: job-id user title copies options [file]
+        print_job "$@"
+        ;;
+    *)
+        echo "Usage: $0 job-id user title copies options [file]" >&2
+        exit 1
+        ;;
+esac

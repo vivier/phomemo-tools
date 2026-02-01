@@ -1,147 +1,191 @@
-#! /usr/bin/python3
+#!/usr/bin/env python3
+"""
+Phomemo CUPS Backend
+
+Cross-platform backend supporting both Linux (BlueZ) and macOS (IOBluetooth).
+Handles printer discovery and job submission via Bluetooth or USB.
+
+Usage:
+    Discovery mode (no arguments):
+        phomemo
+
+    Print mode (called by CUPS):
+        DEVICE_URI=phomemo://AABBCCDDEEFF phomemo job user title copies options [file]
+"""
 
 import sys
 import os
-import subprocess
-import dbus
-import socket
-from urllib.parse import quote
 
-bus = dbus.SystemBus()
+# Add current directory to path for module imports
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, backend_dir)
 
-device_id = 'CLS:PRINTER;CMD:EPSON;DES:Thermal Printer;MFG:Phomemo;MDL:'
+# Import platform-agnostic backends
+from bluetooth import get_bluetooth_backend
+from usb import get_usb_backend
+
+# CUPS device ID string
+DEVICE_ID = 'CLS:PRINTER;CMD:EPSON;DES:Thermal Printer;MFG:Phomemo;MDL:'
+
+
+def format_mac_address(compact: str) -> str:
+    """
+    Convert compact MAC address to colon-separated format.
+
+    Args:
+        compact: MAC address without separators (e.g., 'AABBCCDDEEFF')
+
+    Returns:
+        Colon-separated MAC address (e.g., 'AA:BB:CC:DD:EE:FF')
+    """
+    return ':'.join(compact[i:i+2] for i in range(0, 12, 2))
+
+
 def scan_bluetooth():
-    try:
-        bluez = bus.get_object('org.bluez', '/')
-    except dbus.exceptions.DBusException:
-        print("WARNING: no bluetooth interface", file=sys.stderr)
+    """
+    Discover Bluetooth printers and output CUPS discovery format.
+    """
+    backend = get_bluetooth_backend()
+    if backend is None:
         return
 
-    manager = dbus.Interface(bluez, 'org.freedesktop.DBus.ObjectManager')
+    try:
+        devices = backend.discover_devices()
+    except Exception as e:
+        print(f"WARNING: Bluetooth discovery failed: {e}", file=sys.stderr)
+        return
 
-    objects = manager.GetManagedObjects()
+    for device in devices:
+        device_uri = device.get_cups_uri()
+        device_make_and_model = f'Phomemo {device.model}'
 
-    for path, interfaces in objects.items():
-        if 'org.bluez.Device1' not in interfaces.keys():
-            continue
+        # CUPS discovery output format:
+        # class URI "make and model" "info" "device-id"
+        print(
+            f'direct {device_uri} "{device_make_and_model}" '
+            f'"{device_make_and_model} bluetooth {device.address}" '
+            f'"{DEVICE_ID}{device.model} (BT);"'
+        )
 
-        properties = interfaces['org.bluez.Device1']
-
-        try:
-            name = properties['Name']
-        except KeyError:
-            continue
-
-        if (name.startswith('Mr.in')):
-            model = name[6:]
-        elif (name == 'T02'):
-            model = name
-        else:
-            continue
-
-        address = properties['Address']
-        device_uri = 'phomemo://' + address[0:2:]+address[3:5:]+address[6:8:]+address[9:11:]+address[12:14:]+address[15:17:]
-        device_make_and_model = 'Phomemo ' + model
-
-        print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
-              device_make_and_model + ' bluetooth ' + address + '" "' + device_id + model + ' (BT);"')
-
-class find_class(object):
-    def __init__(self, class_):
-        self._class = class_
-    def __call__(self, device):
-        # first, let's check the device
-        if device.bDeviceClass == self._class:
-            return True
-        # ok, transverse all devices to find an
-        # interface that matches our class
-        for cfg in device:
-            # find_descriptor: what's it?
-            intf = usb.util.find_descriptor(
-                                        cfg,
-                                        bInterfaceClass=self._class
-                                )
-            if intf is not None:
-                return True
-
-        return False
 
 def scan_usb():
-    printers = usb.core.find(find_all=1, custom_match=find_class(7), idVendor=0x0493)
-    for printer in printers:
-            for cfg in printer:
-                intf = usb.util.find_descriptor(cfg, bInterfaceClass=7)
-                if intf is None:
-                    continue
-                Interface = intf.bInterfaceNumber
-                break
-            if printer.idProduct == 0xb002:
-                model = 'M02'
-            elif printer.idProduct == 0x8760:
-                model = 'M110'
-            else:
-                model = 'Unknown(0x%04x)' % (printer.idProduct)
-            usb.util.get_langids(printer)
-            SerialNumber = usb.util.get_string(printer, printer.iSerialNumber)
-            device_uri = 'usb://%s/%s?serial=%s&interface=%d' % (quote(printer.manufacturer), quote(printer.product), SerialNumber, Interface)
-            device_make_and_model = 'Phomemo ' + model
-            print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
-              device_make_and_model + ' USB ' + SerialNumber + '" "' + device_id + model + ' (USB);"')
+    """
+    Discover USB printers and output CUPS discovery format.
+    """
+    backend = get_usb_backend()
+    if backend is None:
+        return
 
-
-if len(sys.argv) == 1:
-    scan_bluetooth()
     try:
-        import usb.core
-        import usb.util
-    except ModuleNotFoundError:
-        print("WARNING: Please install python3-usb to support usb-discovery", file=sys.stderr)
-        exit(0)
-    scan_usb()
-    exit(0)
+        devices = backend.discover_devices()
+    except Exception as e:
+        print(f"WARNING: USB discovery failed: {e}", file=sys.stderr)
+        return
 
-try:
-    device_uri = os.environ['DEVICE_URI']
-except:
-    exit(1)
+    for device in devices:
+        device_uri = device.get_cups_uri()
+        device_make_and_model = f'Phomemo {device.model}'
 
-uri = device_uri.split('://')
+        print(
+            f'direct {device_uri} "{device_make_and_model}" '
+            f'"{device_make_and_model} USB {device.serial}" '
+            f'"{DEVICE_ID}{device.model} (USB);"'
+        )
 
-if uri[0] != 'phomemo':
-    exit(1)
 
-a = uri[1]
-bdaddr = a[0:2:] + ':' + a[2:4:] + ':' + a[4:6:] + ':' + a[6:8:] + ':' + a[8:10:] + ':' + a[10:12:]
+def print_job(address: str):
+    """
+    Connect to printer and send print job data.
 
-print('DEBUG: ' + sys.argv[0] +' device ' + bdaddr)
+    Args:
+        address: Bluetooth MAC address (format: XX:XX:XX:XX:XX:XX)
+    """
+    backend = get_bluetooth_backend()
+    if backend is None:
+        print("ERROR: Bluetooth not available on this platform", file=sys.stderr)
+        sys.exit(1)
 
-try:
-    print('STATE: +connecting-to-device')
-    sock = socket.socket(socket.AF_BLUETOOTH, proto=socket.BTPROTO_RFCOMM)
-    sock.connect((bdaddr, 1))
-    print('STATE: +sending-data')
-    with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
-        while True:
-            data = stdin.read(8192)
-            size = len(data)
-            if size == 0:
-                break
-            sock.sendall(data)
-            print('DEBUG: sent %d' % (size))
-except OSError as btErr:
-    print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
-    exit(1)
-except socket.error as SockErr:
-    print("ERROR: Cannot write data: " + str(SockErr), file=sys.stderr)
-    exit(1)
-try:
-    # we need to wait the printer answer before closing the socket
-    # otherwise the print is stopped
-    print('STATE: +receiving-data')
-    sock.settimeout(8)
-    while True:
-        received = sock.recv(28)
-        print('DEBUG: ' + " 0x".join("%02x" % b for b in received))
-except:
-    pass
-exit(0)
+    try:
+        print('STATE: +connecting-to-device')
+        conn = backend.connect(address, channel=1)
+
+        print('STATE: +sending-data')
+        with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
+            while True:
+                data = stdin.read(8192)
+                if not data:
+                    break
+                conn.send(data)
+                print(f'DEBUG: sent {len(data)}')
+
+        # Wait for printer acknowledgment before closing
+        # This prevents premature connection close which stops printing
+        print('STATE: +receiving-data')
+        try:
+            received = conn.receive(28, timeout=8.0)
+            if received:
+                hex_str = " 0x".join(f"{b:02x}" for b in received)
+                print(f'DEBUG: {hex_str}')
+        except TimeoutError:
+            pass
+        except Exception as e:
+            print(f'DEBUG: receive error (non-fatal): {e}')
+
+        conn.close()
+        print('STATE: -connecting-to-device')
+        print('STATE: -sending-data')
+        print('STATE: -receiving-data')
+
+    except ConnectionError as e:
+        print(f"ERROR: Can't open Bluetooth connection: {e}", file=sys.stderr)
+        sys.exit(1)
+    except IOError as e:
+        print(f"ERROR: Cannot write data: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"ERROR: Unexpected error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def main():
+    """Main entry point for CUPS backend."""
+
+    # Discovery mode: no arguments
+    if len(sys.argv) == 1:
+        scan_bluetooth()
+        scan_usb()
+        sys.exit(0)
+
+    # Print mode: DEVICE_URI environment variable required
+    device_uri = os.environ.get('DEVICE_URI')
+    if not device_uri:
+        print("ERROR: DEVICE_URI environment variable not set", file=sys.stderr)
+        sys.exit(1)
+
+    # Parse device URI
+    try:
+        scheme, address = device_uri.split('://', 1)
+    except ValueError:
+        print(f"ERROR: Invalid device URI format: {device_uri}", file=sys.stderr)
+        sys.exit(1)
+
+    if scheme != 'phomemo':
+        print(f"ERROR: Unsupported URI scheme: {scheme}", file=sys.stderr)
+        sys.exit(1)
+
+    # Convert compact address to MAC format
+    if len(address) == 12:
+        bdaddr = format_mac_address(address)
+    elif ':' in address and len(address) == 17:
+        bdaddr = address
+    else:
+        print(f"ERROR: Invalid Bluetooth address: {address}", file=sys.stderr)
+        sys.exit(1)
+
+    print(f'DEBUG: {sys.argv[0]} device {bdaddr}')
+    print_job(bdaddr)
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()

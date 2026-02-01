@@ -1,0 +1,154 @@
+*PPD-Adobe: "4.3"
+*%%%% PPD file for M220 with CUPS.
+*%%%% Created by the CUPS PPD Compiler CUPS v2.3.4.
+*FormatVersion: "4.3"
+*FileVersion: "1.0"
+*LanguageVersion: English
+*LanguageEncoding: ISOLatin1
+*PCFileName: "Phomemo-M220.ppd"
+*Product: "(M220)"
+*Manufacturer: "Phomemo"
+*ModelName: "Phomemo M220"
+*ShortNickName: "Phomemo M220"
+*NickName: "Phomemo M220"
+*PSVersion: "(3010.000) 0"
+*LanguageLevel: "3"
+*ColorDevice: False
+*DefaultColorSpace: Gray
+*FileSystem: False
+*Throughput: "1"
+*LandscapeOrientation: Plus90
+*TTRasterizer: Type42
+*% Driver-defined attributes...
+*cupsSNMPSupplies: "false"
+*cupsVersion: 2.3
+*cupsModelNumber: 0
+*cupsManualCopies: False
+*cupsFilter: "application/vnd.cups-raster 100 rastertopm110"
+*cupsLanguages: "en"
+*OpenUI *PageSize/Media Size: PickOne
+*OrderDependency: 10 AnySetup *PageSize
+*DefaultPageSize: w40h30
+*PageSize w20h100/Label 20mmx100mm: "<</PageSize[57 283]/ImagingBBox null>>setpagedevice"
+*PageSize w20h10/Label 20mmx10mm: "<</PageSize[57 28]/ImagingBBox null>>setpagedevice"
+*PageSize w20h20/Label 20mmx20mm: "<</PageSize[57 57]/ImagingBBox null>>setpagedevice"
+*PageSize w25h10/Label 25mmx10mm: "<</PageSize[71 28]/ImagingBBox null>>setpagedevice"
+*PageSize w25h30/Label 25mmx30mm: "<</PageSize[71 85]/ImagingBBox null>>setpagedevice"
+*PageSize w25h38/Label 25mmx38mm: "<</PageSize[71 108]/ImagingBBox null>>setpagedevice"
+*PageSize w30h20/Label 30mmx20mm: "<</PageSize[85 57]/ImagingBBox null>>setpagedevice"
+*PageSize w30h25/Label 30mmx25mm: "<</PageSize[85 71]/ImagingBBox null>>setpagedevice"
+*PageSize w30h30/Label 30mmx30mm: "<</PageSize[85 85]/ImagingBBox null>>setpagedevice"
+*PageSize w35h15/Label 35mmx15mm: "<</PageSize[99 43]/ImagingBBox null>>setpagedevice"
+*PageSize w40h20/Label 40mmx20mm: "<</PageSize[113 57]/ImagingBBox null>>setpagedevice"
+*PageSize w40h30/Label 40mmx30mm: "<</PageSize[113 85]/ImagingBBox null>>setpagedevice"
+*PageSize w40h40/Label 40mmx40mm: "<</PageSize[113 113]/ImagingBBox null>>setpagedevice"
+*PageSize w40h60/Label 40mmx60mm: "<</PageSize[113 170]/ImagingBBox null>>setpagedevice"
+*PageSize w40h80/Label 40mmx80mm: "<</PageSize[113 227]/ImagingBBox null>>setpagedevice"
+*PageSize w45h60/Label 45mmx60mm: "<</PageSize[128 170]/ImagingBBox null>>setpagedevice"
+*PageSize w50h20/Label 50mmx20mm: "<</PageSize[142 57]/ImagingBBox null>>setpagedevice"
+*PageSize w50h30/Label 50mmx30mm: "<</PageSize[142 85]/ImagingBBox null>>setpagedevice"
+*PageSize w50h50/Label 50mmx50mm: "<</PageSize[142 142]/ImagingBBox null>>setpagedevice"
+*PageSize w50h70/Label 50mmx70mm: "<</PageSize[142 198]/ImagingBBox null>>setpagedevice"
+*PageSize w50h80/Label 50mmx80mm: "<</PageSize[142 227]/ImagingBBox null>>setpagedevice"
+*PageSize w70h80/Label 70mmx80mm: "<</PageSize[198 227]/ImagingBBox null>>setpagedevice"
+*CloseUI: *PageSize
+*OpenUI *PageRegion/Media Size: PickOne
+*OrderDependency: 10 AnySetup *PageRegion
+*DefaultPageRegion: w40h30
+*PageRegion w20h100/Label 20mmx100mm: "<</PageSize[57 283]/ImagingBBox null>>setpagedevice"
+*PageRegion w20h10/Label 20mmx10mm: "<</PageSize[57 28]/ImagingBBox null>>setpagedevice"
+*PageRegion w20h20/Label 20mmx20mm: "<</PageSize[57 57]/ImagingBBox null>>setpagedevice"
+*PageRegion w25h10/Label 25mmx10mm: "<</PageSize[71 28]/ImagingBBox null>>setpagedevice"
+*PageRegion w25h30/Label 25mmx30mm: "<</PageSize[71 85]/ImagingBBox null>>setpagedevice"
+*PageRegion w25h38/Label 25mmx38mm: "<</PageSize[71 108]/ImagingBBox null>>setpagedevice"
+*PageRegion w30h20/Label 30mmx20mm: "<</PageSize[85 57]/ImagingBBox null>>setpagedevice"
+*PageRegion w30h25/Label 30mmx25mm: "<</PageSize[85 71]/ImagingBBox null>>setpagedevice"
+*PageRegion w30h30/Label 30mmx30mm: "<</PageSize[85 85]/ImagingBBox null>>setpagedevice"
+*PageRegion w35h15/Label 35mmx15mm: "<</PageSize[99 43]/ImagingBBox null>>setpagedevice"
+*PageRegion w40h20/Label 40mmx20mm: "<</PageSize[113 57]/ImagingBBox null>>setpagedevice"
+*PageRegion w40h30/Label 40mmx30mm: "<</PageSize[113 85]/ImagingBBox null>>setpagedevice"
+*PageRegion w40h40/Label 40mmx40mm: "<</PageSize[113 113]/ImagingBBox null>>setpagedevice"
+*PageRegion w40h60/Label 40mmx60mm: "<</PageSize[113 170]/ImagingBBox null>>setpagedevice"
+*PageRegion w40h80/Label 40mmx80mm: "<</PageSize[113 227]/ImagingBBox null>>setpagedevice"
+*PageRegion w45h60/Label 45mmx60mm: "<</PageSize[128 170]/ImagingBBox null>>setpagedevice"
+*PageRegion w50h20/Label 50mmx20mm: "<</PageSize[142 57]/ImagingBBox null>>setpagedevice"
+*PageRegion w50h30/Label 50mmx30mm: "<</PageSize[142 85]/ImagingBBox null>>setpagedevice"
+*PageRegion w50h50/Label 50mmx50mm: "<</PageSize[142 142]/ImagingBBox null>>setpagedevice"
+*PageRegion w50h70/Label 50mmx70mm: "<</PageSize[142 198]/ImagingBBox null>>setpagedevice"
+*PageRegion w50h80/Label 50mmx80mm: "<</PageSize[142 227]/ImagingBBox null>>setpagedevice"
+*PageRegion w70h80/Label 70mmx80mm: "<</PageSize[198 227]/ImagingBBox null>>setpagedevice"
+*CloseUI: *PageRegion
+*DefaultImageableArea: w40h30
+*ImageableArea w20h100/Label 20mmx100mm: "2.834645748138 0 53.85827255249 283.464569091797"
+*ImageableArea w20h10/Label 20mmx10mm: "2.834645748138 0 53.85827255249 28.346458435059"
+*ImageableArea w20h20/Label 20mmx20mm: "2.834645748138 0 53.85827255249 56.692916870117"
+*ImageableArea w25h10/Label 25mmx10mm: "2.834645748138 0 68.031494140625 28.346458435059"
+*ImageableArea w25h30/Label 25mmx30mm: "2.834645748138 0 68.031494140625 85.039375305176"
+*ImageableArea w25h38/Label 25mmx38mm: "2.834645748138 0 68.031494140625 107.716537475586"
+*ImageableArea w30h20/Label 30mmx20mm: "2.834645748138 0 82.204727172852 56.692916870117"
+*ImageableArea w30h25/Label 30mmx25mm: "2.834645748138 0 82.204727172852 70.866142272949"
+*ImageableArea w30h30/Label 30mmx30mm: "2.834645748138 0 82.204727172852 85.039375305176"
+*ImageableArea w35h15/Label 35mmx15mm: "2.834645748138 0 96.377952575684 42.519687652588"
+*ImageableArea w40h20/Label 40mmx20mm: "2.834645748138 0 110.55118560791 56.692916870117"
+*ImageableArea w40h30/Label 40mmx30mm: "2.834645748138 0 110.55118560791 85.039375305176"
+*ImageableArea w40h40/Label 40mmx40mm: "2.834645748138 0 110.55118560791 113.385833740234"
+*ImageableArea w40h60/Label 40mmx60mm: "2.834645748138 0 110.55118560791 170.078750610352"
+*ImageableArea w40h80/Label 40mmx80mm: "2.834645748138 0 110.55118560791 226.771667480469"
+*ImageableArea w45h60/Label 45mmx60mm: "2.834645748138 0 124.724411010742 170.078750610352"
+*ImageableArea w50h20/Label 50mmx20mm: "2.834645748138 0 138.897644042969 56.692916870117"
+*ImageableArea w50h30/Label 50mmx30mm: "2.834645748138 0 138.897644042969 85.039375305176"
+*ImageableArea w50h50/Label 50mmx50mm: "2.834645748138 0 138.897644042969 141.732284545898"
+*ImageableArea w50h70/Label 50mmx70mm: "2.834645748138 0 138.897644042969 198.425201416016"
+*ImageableArea w50h80/Label 50mmx80mm: "2.834645748138 0 138.897644042969 226.771667480469"
+*ImageableArea w70h80/Label 70mmx80mm: "2.834645748138 0 195.590560913086 226.771667480469"
+*DefaultPaperDimension: w40h30
+*PaperDimension w20h100/Label 20mmx100mm: "56.692916870117 283.464569091797"
+*PaperDimension w20h10/Label 20mmx10mm: "56.692916870117 28.346458435059"
+*PaperDimension w20h20/Label 20mmx20mm: "56.692916870117 56.692916870117"
+*PaperDimension w25h10/Label 25mmx10mm: "70.866142272949 28.346458435059"
+*PaperDimension w25h30/Label 25mmx30mm: "70.866142272949 85.039375305176"
+*PaperDimension w25h38/Label 25mmx38mm: "70.866142272949 107.716537475586"
+*PaperDimension w30h20/Label 30mmx20mm: "85.039375305176 56.692916870117"
+*PaperDimension w30h25/Label 30mmx25mm: "85.039375305176 70.866142272949"
+*PaperDimension w30h30/Label 30mmx30mm: "85.039375305176 85.039375305176"
+*PaperDimension w35h15/Label 35mmx15mm: "99.212600708008 42.519687652588"
+*PaperDimension w40h20/Label 40mmx20mm: "113.385833740234 56.692916870117"
+*PaperDimension w40h30/Label 40mmx30mm: "113.385833740234 85.039375305176"
+*PaperDimension w40h40/Label 40mmx40mm: "113.385833740234 113.385833740234"
+*PaperDimension w40h60/Label 40mmx60mm: "113.385833740234 170.078750610352"
+*PaperDimension w40h80/Label 40mmx80mm: "113.385833740234 226.771667480469"
+*PaperDimension w45h60/Label 45mmx60mm: "127.559059143066 170.078750610352"
+*PaperDimension w50h20/Label 50mmx20mm: "141.732284545898 56.692916870117"
+*PaperDimension w50h30/Label 50mmx30mm: "141.732284545898 85.039375305176"
+*PaperDimension w50h50/Label 50mmx50mm: "141.732284545898 141.732284545898"
+*PaperDimension w50h70/Label 50mmx70mm: "141.732284545898 198.425201416016"
+*PaperDimension w50h80/Label 50mmx80mm: "141.732284545898 226.771667480469"
+*PaperDimension w70h80/Label 70mmx80mm: "198.425201416016 226.771667480469"
+*MaxMediaWidth: "0"
+*MaxMediaHeight: "0"
+*HWMargins: 2.834645748138 0 2.834645748138 0
+*CustomPageSize True: "pop pop pop <</PageSize[5 -2 roll]/ImagingBBox null>>setpagedevice"
+*ParamCustomPageSize Width: 1 points 0 0
+*ParamCustomPageSize Height: 2 points 0 0
+*ParamCustomPageSize WidthOffset: 3 points 0 0
+*ParamCustomPageSize HeightOffset: 4 points 0 0
+*ParamCustomPageSize Orientation: 5 int 0 0
+*OpenUI *Resolution/Resolution: PickOne
+*OrderDependency: 10 AnySetup *Resolution
+*DefaultResolution: 203dpi
+*Resolution 203dpi/203dpi: "<</HWResolution[203 203]/cupsBitsPerColor 8/cupsRowCount 0/cupsRowFeed 0/cupsRowStep 0>>setpagedevice"
+*CloseUI: *Resolution
+*OpenUI *ColorModel/Color Mode: PickOne
+*OrderDependency: 10 AnySetup *ColorModel
+*DefaultColorModel: Gray
+*ColorModel Gray/Grayscale: "<</cupsColorSpace 0/cupsColorOrder 0/cupsCompression 0>>setpagedevice"
+*CloseUI: *ColorModel
+*OpenUI *MediaType/Media Type: PickOne
+*OrderDependency: 10 AnySetup *MediaType
+*DefaultMediaType: LabelWithGaps
+*MediaType LabelWithGaps/Label With Gaps: "<</MediaType(LabelWithGaps)/cupsMediaType 10>>setpagedevice"
+*MediaType Continuous/Continuous: "<</MediaType(Continuous)/cupsMediaType 11>>setpagedevice"
+*MediaType LabelWithMarks/Label With Marks: "<</MediaType(LabelWithMarks)/cupsMediaType 38>>setpagedevice"
+*CloseUI: *MediaType
+*DefaultFont: Courier
+*% End of Phomemo-M220.ppd, 10021 bytes.

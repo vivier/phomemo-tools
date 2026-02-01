@@ -92,7 +92,7 @@ def print_raster(file, image, line, lines = 0xff, mode = 0):
     file.write(lines.to_bytes(2, 'little'))
     # bit image
     block = image.crop((0, line, image.width, line + lines))
-    stdout.write(block.tobytes())
+    file.write(block.tobytes())
     return
 
 def print_footer(file):
