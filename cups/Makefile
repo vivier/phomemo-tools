@@ -14,6 +14,9 @@ install:
 	install -D drv/phomemo-m110.drv -t $(DESTDIR)/usr/share/cups/drv/
 	install -D drv/phomemo-d30.drv -t $(DESTDIR)/usr/share/cups/drv/
 	install -D drv/phomemo-m421.drv -t $(DESTDIR)/usr/share/cups/drv/
+	install -D drv/phomemo-m04.drv -t $(DESTDIR)/usr/share/cups/drv/
+	install -D ppd/Phomemo-M04S.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
+	install -D ppd/Phomemo-M04AS.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
 	install -D ppd/Phomemo-M110.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
 	install -D ppd/Phomemo-M120.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
 	install -D ppd/Phomemo-M220.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
@@ -21,4 +24,5 @@ install:
 	install -Dm 755 filter/rastertopm02_t02.py $(DESTDIR)/usr/lib/cups/filter/rastertopm02_t02
 	install -Dm 755 filter/rastertopm110.py $(DESTDIR)/usr/lib/cups/filter/rastertopm110
 	install -Dm 755 filter/rastertopd30.py $(DESTDIR)/usr/lib/cups/filter/rastertopd30
+	install -Dm 755 filter/rastertopm04.py $(DESTDIR)/usr/lib/cups/filter/rastertopm04
 	install -Dm 755 backend/phomemo.py $(DESTDIR)/usr/lib/cups/backend/phomemo
