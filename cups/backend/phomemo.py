@@ -3,6 +3,7 @@
 import sys
 import os
 import subprocess
+import time
 import dbus
 import socket
 from urllib.parse import quote
@@ -115,18 +116,51 @@ bdaddr = a[0:2:] + ':' + a[2:4:] + ':' + a[4:6:] + ':' + a[6:8:] + ':' + a[8:10:
 
 print('DEBUG: ' + sys.argv[0] +' device ' + bdaddr)
 
+# The M04 family needs paced sends and a long connection hold (see below). Those
+# would needlessly slow every other Bluetooth model, so enable them only for M04
+# queues, detected from the PPD CUPS gives us for this job.
+def is_m04_queue():
+    ppd = os.environ.get('PPD')
+    if not ppd:
+        ppd = '/etc/cups/ppd/%s.ppd' % os.environ.get('PRINTER', '')
+    try:
+        # Read in binary: PPDs may be Latin-1 (translated NickNames etc.) and a
+        # UnicodeDecodeError here would abort the backend for every model. Match
+        # the ModelName line so a stray "M04" elsewhere can't misfire the gate.
+        with open(ppd, 'rb') as fh:
+            for line in fh:
+                if line.startswith(b'*ModelName:') and b'M04' in line:
+                    return True
+    except Exception:
+        pass
+    return False
+
+m04 = is_m04_queue()
+
 try:
     print('STATE: +connecting-to-device')
     sock = socket.socket(socket.AF_BLUETOOTH, proto=socket.BTPROTO_RFCOMM)
     sock.connect((bdaddr, 1))
     print('STATE: +sending-data')
+    # The M04 has a small Bluetooth receive buffer and does not apply back
+    # pressure: a large burst overruns it and the tail (including the final feed)
+    # is silently dropped. For M04 send in small paced chunks so it can keep up;
+    # other models keep the original single-burst writes.
+    CHUNK = 256
+    sent_total = 0
     with os.fdopen(sys.stdin.fileno(), 'rb', closefd=False) as stdin:
         while True:
             data = stdin.read(8192)
             size = len(data)
             if size == 0:
                 break
-            sock.sendall(data)
+            if m04:
+                for off in range(0, size, CHUNK):
+                    sock.sendall(data[off:off + CHUNK])
+                    time.sleep(0.02)
+            else:
+                sock.sendall(data)
+            sent_total += size
             print('DEBUG: sent %d' % (size))
 except OSError as btErr:
     print("ERROR: Can't open Bluetooth connection: " + str(btErr), file=sys.stderr)
@@ -138,10 +172,28 @@ try:
     # we need to wait the printer answer before closing the socket
     # otherwise the print is stopped
     print('STATE: +receiving-data')
-    sock.settimeout(8)
-    while True:
-        received = sock.recv(28)
-        print('DEBUG: ' + " 0x".join("%02x" % b for b in received))
+    if m04:
+        # The M04 buffers the data quickly but prints slowly (~1 KB/s) and stays
+        # silent while doing so, so an idle timeout would close far too early and
+        # truncate the page. Hold the connection for a time proportional to the
+        # amount of data sent, draining any status bytes in the meantime.
+        hold = max(8.0, sent_total / 1000.0)
+        deadline = time.monotonic() + hold
+        print('DEBUG: holding connection %.0fs for print to drain' % hold)
+        sock.settimeout(2)
+        while time.monotonic() < deadline:
+            try:
+                received = sock.recv(28)
+                if not received:
+                    break  # printer closed the connection; nothing left to drain
+                print('DEBUG: ' + " 0x".join("%02x" % b for b in received))
+            except socket.timeout:
+                pass
+    else:
+        sock.settimeout(8)
+        while True:
+            received = sock.recv(28)
+            print('DEBUG: ' + " 0x".join("%02x" % b for b in received))
 except:
     pass
 exit(0)
