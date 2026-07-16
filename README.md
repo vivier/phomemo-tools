@@ -1,7 +1,7 @@
 # Phomemo-tools
 
 This package is trying to provide tools to print pictures using
-the Phomemo M02, M02 Pro, M02S, M110, M120, M220 and T02 thermal printers from Linux.
+the Phomemo M02, M02 Pro, M02S, M110, M120, M220, T02 and M835 thermal printers from Linux.
 
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
@@ -495,3 +495,120 @@ Dumpping USB packets.
   0x1f 0xf0 0x05 0x00
   0x1f 0xf0 0x03 0x00
 ```
+
+## 6. Protocol for M835
+
+The M835 is a 300 DPI thermal printer with A4/Letter paper support.
+Unlike the M02 (203 DPI, 384 dots/line), the M835 operates at 300 DPI
+and supports variable paper widths up to 214mm (2528 dots).
+
+### 6.1. Bluetooth Architecture
+
+The M835 uses **dual-mode Bluetooth**:
+
+- **Discovery**: BLE (Bluetooth Low Energy) — the printer advertises as "M835"
+  but goes to sleep when idle to save battery. `bluetoothctl scan on` does NOT
+  find it. Use Python's `bleak` library for reliable BLE discovery.
+- **Connection**: Classic Bluetooth RFCOMM (Serial Port Profile)
+  - SPP UUID: `00001101-0000-1000-8000-00805f9b34fb`
+  - Channel: 1
+  - Service name: `JL_SPP` (Jieli Technology chip)
+
+### 6.2. HEADER
+
+```
+  0x1b 0x40      -> command ESC @: initialize printer
+  0x1f 0x11 0x02 0x04
+```
+
+### 6.3. BLOCK MARKER
+
+```
+  0x1d 0x76 0x30 -> command GS v 0 : print raster bit image
+  0x00              mode: 0 (normal), 1 (double width),
+                          2 (double-height), 3 (quadruple)
+  0xXX 0x00         16bit, little-endian: number of bytes / line
+  0xYY 0x00         16bit, little-endian: number of lines in the block (max 255)
+```
+
+The M835 uses the same GS v 0 command as the M02, but supports arbitrary
+line widths (must be divisible by 8). For 214mm paper at 300 DPI:
+- 214mm × 11.81 dots/mm ≈ 2528 dots → 316 bytes/line
+
+For images taller than 255 lines, send multiple block markers.
+
+### 6.4. FOOTER
+
+```
+  0x1b 0x64 0x02  -> ESC d: print and feed 2 lines
+  0x1b 0x64 0x02  -> ESC d: print and feed 2 lines
+  0x1f 0x11 0x08
+  0x1f 0x11 0x0e
+  0x1f 0x11 0x07
+  0x1f 0x11 0x09
+```
+
+### 6.5. FLOW CONTROL (critical)
+
+The M835 has a small internal buffer. Sending data too fast causes a timeout
+(Errno 110: Connection timed out). The working parameters are:
+
+- **Chunk size**: 256 bytes per `send()` call
+- **Delay**: 30ms between chunks
+- On buffer-full error: read `recv()` to drain, then retry with 3× delay
+
+Without flow control, sending a full-page image (~1MB) fails at ~16%.
+
+### 6.6. IMAGE
+
+Each line is N bytes long (N = width / 8), each bit is a pixel.
+At 300 DPI: 300 dots per inch = 11.81 dots per millimeter.
+1 = black (burn), 0 = white (skip), MSB first.
+
+### 6.7. Printer Status Response
+
+```
+  1a 3b 04 19 00 00 00  (7 bytes)
+```
+
+### 6.8. Bluetooth Usage
+
+```bash
+# Discover via BLE (requires bleak: pip3 install bleak)
+python3 -c "import asyncio; from bleak import BleakScanner; \
+devices = asyncio.run(BleakScanner.discover(timeout=10)); \
+[print(f'{d.name} at {d.address}') for d in devices if d.name and 'M835' in d.name.upper()]"
+
+# Pair and trust
+bluetoothctl pair FE:10:1D:EE:5F:C2
+bluetoothctl trust FE:10:1D:EE:5F:C2
+
+# Print (no rfcomm needed — uses Python's built-in bluetooth socket)
+python3 tools/phomemo-m835-bt.py image.png
+python3 tools/phomemo-m835-bt.py image.png --feed 40
+```
+
+No `rfcomm` bind is needed — the script uses Python's built-in
+`socket.AF_BLUETOOTH` with `BTPROTO_RFCOMM` directly.
+
+### 6.9. M835 vs M02 Comparison
+
+| Property | M02 | M835 |
+|----------|-----|------|
+| DPI | 203 | 300 |
+| Dots per line | 384 (48 bytes) | Variable (up to 2528, 316 bytes) |
+| Paper width | 48mm | Up to 214mm (A4/Letter) |
+| Discovery | Bluetooth Classic | BLE (sleeps when idle) |
+| Connection | RFCOMM channel 1 | RFCOMM channel 1 |
+| SPP UUID | 00001101 | 00001101 |
+| Protocol | ESC/POS raster (GS v 0) | ESC/POS raster (GS v 0) |
+| Flow control | Not required | 256-byte chunks, 30ms delay |
+
+### 6.10. Attribution
+
+Protocol reverse-engineered by Sean (battlemark-ai) and Mechanic
+(Hermes Agent, glm-5.2:cloud) on 2026-07-03. The Phomemo Android app
+(`com.quyin.phomemo`) was decompiled with jadx to confirm the
+protocol structure. The app uses BLE for discovery but Classic
+RFCOMM for all data transfer — the BLE connector classes in the APK
+are legacy code that is never instantiated.
