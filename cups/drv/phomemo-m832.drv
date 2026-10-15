@@ -1,0 +1,49 @@
+//
+// Driver info file for Phomemo M832
+//
+
+#include <font.defs>
+#include <media.defs>
+
+#media "w110h146/110mm x 146mm" 110mm 146mm
+#media "w80h106/80mm x 106mm" 80mm 106mm
+#media "w53h70/53mm x 70mm" 53mm 70mm
+
+Manufacturer "Phomemo"
+Version 2.0
+ColorDevice No
+Attribute "cupsSNMPSupplies" "" "false"
+HWMargins 0 0 0 0
+
+Filter "application/vnd.cups-raster 100 rastertopm832"
+*Resolution - 8 0 0 0 300dpi
+ColorModel Gray/Grayscale w chunky 0
+
+*MediaSize A4
+MediaSize Letter
+MediaSize "w110h146"
+MediaSize "w80h106"
+MediaSize "w53h70"
+
+VariablePaperSize Yes
+MinSize 20mm 20mm
+MaxSize 216mm 2000mm
+
+*MediaType 11 "Continuous/Continuous"
+MediaType 38 "BLine/Black Mark"
+
+Option "Darkness/Darkness" PickOne AnySetup 10.0
+  *Choice "Default/Printer Default" "<</cupsInteger0 0>>setpagedevice"
+  Choice "Light/Light" "<</cupsInteger0 1>>setpagedevice"
+  Choice "Medium/Medium" "<</cupsInteger0 2>>setpagedevice"
+  Choice "Dark/Dark" "<</cupsInteger0 4>>setpagedevice"
+
+Option "PrintMode/Print Mode" PickOne AnySetup 10.0
+  *Choice "Grayscale/Grayscale (dithered)" "<</cupsInteger1 0>>setpagedevice"
+  Choice "BlackWhite/Black and White" "<</cupsInteger1 1>>setpagedevice"
+
+{
+  ModelName "M832"
+  PCFileName "Phomemo-M832.ppd"
+  Attribute "NickName" "" "Phomemo M832"
+}
