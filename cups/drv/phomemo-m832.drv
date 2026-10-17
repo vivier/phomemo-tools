@@ -1,0 +1,50 @@
+//
+// Driver info file for Phomemo M832
+//
+// Copyright © 2026 Justant-source <8284903+Justant-source@users.noreply.github.com>
+//
+
+#include <font.defs>
+#include <media.defs>
+#include <label.h>
+
+// Continuous roll media, printed full bleed. The 110 mm roll is the size that
+// was tested on real hardware: CUPS computes 1299 dots (163 bytes) per line at
+// 300 DPI for it. The 80 mm and 53 mm rolls are declared from the sizes the
+// printer is sold with and have not been tested.
+#media "w110h146/Label 110mmx146mm" 110mm 146mm
+#media "w80h106/Label 80mmx106mm" 80mm 106mm
+#media "w53h70/Label 53mmx70mm" 53mm 70mm
+
+Manufacturer "Phomemo"
+Version 2.0
+DriverType label
+ColorDevice No
+Attribute "cupsSNMPSupplies" "" "false"
+HWMargins 0 0 0 0
+
+Filter "application/vnd.cups-raster 100 rastertopm832"
+*Resolution - 8 0 0 0 300dpi
+ColorModel Gray/Grayscale w chunky 0
+
+*MediaSize "w110h146"
+MediaSize "w80h106"
+MediaSize "w53h70"
+
+// A4 and Letter are cut sheets: they keep an unprintable border the rolls do
+// not have, so they switch to their own margins instead of the full bleed the
+// rolls above use (HWMargins applies to whatever MediaSize follows it).
+// Neither has been printed on real paper.
+HWMargins 14.17 30 14.17 30
+MediaSize "A4"
+MediaSize "Letter"
+
+VariablePaperSize Yes
+MinSize 0.00 0.00
+MaxSize 0.00 0.00
+
+{
+  Attribute "NickName" "" "Phomemo M832"
+  ModelName "M832"
+  PCFileName "Phomemo-M832.ppd"
+}

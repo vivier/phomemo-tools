@@ -1,7 +1,7 @@
 # Phomemo-tools
 
 This package is trying to provide tools to print pictures using
-the Phomemo M02, M02 Pro, M02S, M110, M120, M220 and T02 thermal printers from Linux.
+the Phomemo M02, M02 Pro, M02S, M110, M120, M220, T02 and M832 thermal printers from Linux.
 
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
