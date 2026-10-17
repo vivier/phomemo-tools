@@ -43,6 +43,21 @@ VariablePaperSize Yes
 MinSize 0.00 0.00
 MaxSize 0.00 0.00
 
+// Black mark paper is only used with the A4 and Letter sheet sizes; roll sizes
+// are always printed as continuous.
+*MediaType 11 "Continuous/Continuous"
+MediaType 38 "BLine/Black Mark"
+
+Option "Darkness/Darkness" PickOne AnySetup 10.0
+  *Choice "Default/Printer Default" "<</cupsInteger0 0>>setpagedevice"
+  Choice "Light/Light" "<</cupsInteger0 1>>setpagedevice"
+  Choice "Medium/Medium" "<</cupsInteger0 2>>setpagedevice"
+  Choice "Dark/Dark" "<</cupsInteger0 4>>setpagedevice"
+
+Option "PrintMode/Print Mode" PickOne AnySetup 10.0
+  *Choice "Grayscale/Grayscale (dithered)" "<</cupsInteger1 0>>setpagedevice"
+  Choice "BlackWhite/Black and White" "<</cupsInteger1 1>>setpagedevice"
+
 {
   Attribute "NickName" "" "Phomemo M832"
   ModelName "M832"

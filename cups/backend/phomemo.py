@@ -37,6 +37,8 @@ def scan_bluetooth():
             model = name[6:]
         elif (name == 'T02'):
             model = name
+        elif (name.startswith('M832')):
+            model = 'M832'
         else:
             continue
 

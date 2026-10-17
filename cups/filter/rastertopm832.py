@@ -97,8 +97,19 @@ def read_ras3(rdata):
 
     return pages
 
-def print_header(file):
-    file.write(US + b'\x11\x0b')     # media type: continuous
+MEDIA_CONTINUOUS = 0x0b
+MEDIA_BLACK_MARK = 0x26
+
+def media_type(header, sheet):
+    # Black mark paper only applies to cut sheets; rolls are always continuous.
+    if sheet and header.cupsMediaType == MEDIA_BLACK_MARK:
+        return MEDIA_BLACK_MARK
+    return MEDIA_CONTINUOUS
+
+def print_header(file, media, density):
+    file.write(US + b'\x11' + media.to_bytes(1, 'little'))  # media type
+    if density in (1, 2, 4):
+        file.write(US + b'\x11\x02' + density.to_bytes(1, 'little'))  # darkness
     file.write(US + b'\x11\x35\x00') # compression: raw
     return
 
@@ -147,9 +158,16 @@ with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
         im = Image.frombuffer(mode='L', data=imgdata,
                               size=(header.cupsWidth, header.cupsHeight))
         im = ImageOps.invert(im)
-        im = im.convert('1')
+        # PPD cupsInteger1 (zero-based) arrives here as cupsInteger2
+        if header.cupsInteger2 == 1:
+            # Black and white: hard threshold, no dithering
+            im = im.point(lambda p: 255 if p >= 127 else 0).convert('1', dither=Image.Dither.NONE)
+        else:
+            im = im.convert('1')
 
-        if sheet:
+        media = media_type(header, sheet)
+
+        if sheet and media == MEDIA_CONTINUOUS:
             # A sheet is ejected whole, so the page is padded to the full sheet
             # length instead of being cropped: crop() past the bottom edge fills
             # with blank lines. The count comes from the page geometry so it
@@ -166,7 +184,8 @@ with os.fdopen(sys.stdout.fileno(), "wb", closefd=False) as stdout:
             im = im.crop((0, 0, im.width, bbox[3] if bbox else 0))
 
         if im.height:
-            print_header(stdout)
+            # PPD cupsInteger0 (zero-based) arrives here as cupsInteger1
+            print_header(stdout, media, header.cupsInteger1)
             # The page goes out as a single GS v 0 block; the 16-bit line count
             # only needs splitting past 65535 lines, 5.5 m at 300 DPI.
             line = 0
