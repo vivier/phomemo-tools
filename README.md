@@ -223,6 +223,17 @@ The -p option defines the printer name. It should be changed according to the pr
                            -P /usr/share/cups/model/Phomemo/Phomemo-M110.ppd.gz
 ```
 
+###### 2.2.2.1.3 M832
+
+The M832 advertises itself as "M832" and is found by the backend's Bluetooth
+discovery. Options: `MediaType` (Continuous, BLine), `Darkness` (Default, Light,
+Medium, Dark) and `PrintMode` (Grayscale, BlackWhite).
+
+```
+  $ sudo lpadmin -p M832 -E -v phomemo://DC0D309023C7 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M832.ppd.gz
+```
+
 ##### 2.2.2.2. USB
 
 This definition will use the /dev/usb/lp0 device to connect to the printer:
