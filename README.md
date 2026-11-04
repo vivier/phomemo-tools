@@ -1,7 +1,8 @@
 # Phomemo-tools
 
 This package is trying to provide tools to print pictures using
-the Phomemo M02, M02 Pro, M02S, M110, M120, M220, T02 and M832 thermal printers from Linux.
+the Phomemo M02, M02 Pro, M02S, M110, M120, M220, T02, M832 and M832D thermal printers
+from Linux.
 
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
@@ -33,6 +34,11 @@ $ sudo rfcomm connect 0 DC:0D:30:90:23:C7
   Connected /dev/rfcomm0 to DC:0D:30:90:23:C7 on channel 1
   Press CTRL-C for hangup
 ```
+
+The M832D is Bluetooth Low Energy only and has no RFCOMM channel, so `rfcomm`
+does not apply to it. Print to it through the CUPS backend in section 2, which
+selects the configured printer by the address in the queue URI, chooses the LE
+bearer explicitly, and resolves the FF02 and FF03 characteristics by UUID.
 
 * Send the picture to the printer (the python script currently only works with M02 printers):
 
@@ -107,8 +113,53 @@ On Debian you have to install cups:
 Next you need to ensure the required dependencies are installed (if this is skipped you will see a 'Filter Failure' error when trying to print):
 
 ```
-  $ sudo apt-get install python3-pil python3-pyusb
+  $ sudo apt-get install python3-pil python3-usb
 ```
+
+For the M832D Bluetooth Low Energy backend, also install `python3-bleak` and
+`python3-dbus-fast`. They are only used for M832D queues, so the other models
+work without them.
+
+#### Ubuntu 24.04 LTS
+
+The M832D filters and the CUPS backends have been tested and work on Ubuntu 24.04 LTS.
+
+```
+  $ sudo apt-get update
+  $ sudo apt-get install cups python3-pil python3-usb python3-bleak python3-dbus-fast
+```
+
+Pairing over BLE needs BlueZ experimental mode; see section 2.2.2.1.4 for the
+requirement and how to enable it.
+
+#### Debian 13
+
+The M832D filters and the CUPS backends have also been tested and work on Debian 13,
+with the same dependencies as Ubuntu 24.04 LTS:
+
+```
+  $ sudo apt-get update
+  $ sudo apt-get install cups python3-pil python3-usb python3-bleak python3-dbus-fast
+```
+
+and the same BlueZ experimental mode, enabled as described in section 2.2.2.1.4.
+
+#### Fedora
+
+The M832D filters and the CUPS backends have also been tested and work on Fedora, with the
+same BlueZ experimental mode as Ubuntu 24.04 LTS and Debian 13, and with the Bluetooth
+controller set to LE only instead of dual mode (see section 2.2.2.1.4).
+
+What was installed for the test:
+
+```
+  $ sudo dnf install python3-pillow python3-usb python3-dbus-fast
+  $ pip install bleak
+```
+
+`bleak` came from pip, `python3-bleak` being the dnf equivalent. The Debian blocks above
+use the Debian spellings of the same packages, `python3-pil` and `python3-pyusb`. The
+SELinux note in section 2.2.1.1 applies as before.
 
 Finally once you are in the folder containing your copy of this repository you can build and install phomemo-tools files:
 
@@ -118,11 +169,39 @@ Finally once you are in the folder containing your copy of this repository you c
   $ sudo make install
 ```
 
+To remove the files installed above, run the same commands with `uninstall`
+(from the repository root, or from the `cups/` directory if that is where you
+installed):
+
+```
+  $ sudo make uninstall
+```
+
+If the glabels template was installed for your own user with `make user-install`,
+remove it with:
+
+```
+  $ make user-uninstall
+```
+
+Uninstall only removes the files this repository installs; it does not remove the
+CUPS printer queues created in section 2.2. Remove a queue with:
+
+```
+  $ sudo lpadmin -x M02
+```
+
+If phomemo-tools was installed from the COPR RPM, use the package manager instead:
+
+```
+  $ sudo dnf remove phomemo-tools
+```
+
 ### 2.2. Configuration
 
 #### 2.2.1. GUI
 
-##### 2.2.2.1.1. Pre-requisite
+##### 2.2.1.1. Pre-requisite
 
 On Fedora, SELinux seems to prevent the backend to create a bluetooth socket.
 If you have such error message in your syslog:
@@ -141,7 +220,7 @@ I didn't find a way to define correctly the SELinux rules to allow the backend
 to use bluetooth socket without to change the enforcement mode
 (the couple ausearch/audit2allow doesn't fix the problem).
 
-##### 2.2.2.1.1. Pair the printer
+##### 2.2.1.2. Pair the printer
 
 1. Switch on the printer
 2. Open the "Settings" window:
@@ -234,6 +313,82 @@ Medium, Dark) and `PrintMode` (Grayscale, BlackWhite).
                            -P /usr/share/cups/model/Phomemo/Phomemo-M832.ppd.gz
 ```
 
+###### 2.2.2.1.4 M832D
+
+The M832D is a Bluetooth Low Energy printer with no RFCOMM channel. BlueZ
+experimental mode is required for it on Ubuntu, Debian and Fedora, because the BLE
+backend needs the experimental D-Bus interfaces (the LE bearer, PreferredBearer and
+ConnectDevice) to pair and connect the printer.
+
+Set it in /etc/bluetooth/main.conf under [General]:
+
+```
+  Experimental = true
+```
+
+and restart the daemon before pairing the printer:
+
+```
+  $ sudo systemctl restart bluetooth
+```
+
+The deprecated equivalent is running bluetoothd with `--experimental`
+(`/usr/libexec/bluetooth/bluetoothd` on Fedora, `/usr/lib/bluetooth/bluetoothd` on
+Ubuntu): one of the two is enough, and main.conf is the persistent form. The
+`experimental on` command inside bluetoothctl only affects the client and not the
+daemon, so it is not sufficient on its own.
+
+A bond created before experimental mode was enabled may have no LE bearer, so a
+printer that was paired earlier has to be paired again.
+
+In testing on Fedora, the controller needed to be set to LE only rather than dual mode. 
+The backend chooses the LE bearer explicitly and never falls back to Classic Bluetooth, 
+so a printer that BlueZ resolves over BR/EDR is rejected as having no LE address type. 
+The bearer is chosen with ConnectDevice, or with PreferredBearer, which BlueZ only 
+provisions for a public-address device. If the machine has more than one controller, 
+name the LE one in the queue URI, `phomemo://DC0D309023C7?adapter=hci0`; a printer 
+discovered through another adapter is refused.
+
+Then pair the printer and define the queue with the same "phomemo" backend:
+
+```
+  $ sudo bluetoothctl pair DC:0D:30:90:23:C7
+  $ sudo lpadmin -p M832D -E -v phomemo://DC0D309023C7 \
+                           -P /usr/share/cups/model/Phomemo/Phomemo-M832D.ppd.gz
+```
+
+Options: `MediaType` (Continuous, BLine), `M832DDarkness` (Default, Fine, Medium,
+Thick), `M832DPrintMode` (Grayscale, BlackWhite), `M832DRendering` (FloydSteinberg,
+Atkinson), `M832DThreshold` (the Black and White cut-off), `M832DRotation`,
+`M832DOffsetX`, `M832DOffsetY` and `M832DPagePause`. The dithering choice applies only
+to Grayscale and the threshold value only to Black and White.
+
+The backend reads the ModelName from the PPD of the job and only routes queues
+whose model is in the BLE whitelist to the phomemo-ble backend; every other model
+keeps the RFCOMM path unchanged. Add a model to `BLE_MODELS` in
+`cups/backend/phomemo.py` to extend the whitelist. The backend can also be reached
+directly with the `phomemo-ble://` scheme, and an M832D queue on a
+`serial:/dev/usb/lp0` device uses the same filter over USB.
+
+Throughput on Bluetooth is limited by the transport, not by the printer. The backend
+writes in acknowledged chunks, and 182 bytes is the tested ceiling for one write (section
+6.1), so every chunk waits for its ATT acknowledgement and a page costs roughly one round
+trip per chunk. Time therefore grows with the amount of raster in the page, and the
+effective rate falls as the media gets larger: a small label finishes in seconds while
+a full page, or a cut sheet such as A4 or Letter, takes minutes. Media widths of
+110 mm and less are the practical ones over Bluetooth; the same filter on a USB queue
+does not have this limit.
+
+The SELinux note above covers the RFCOMM socket. The BLE backend reaches BlueZ
+over D-Bus instead, which may need a different policy; the permissive setting is
+not sufficient on its own.
+
+A successful backend exit and an ATT acknowledgement confirm that the host
+delivered bytes, not that the printer physically finished the page. The backend
+does not retry once data may have reached the printer.
+
+How those bytes reach the printer, in broad strokes, is section 6.1.
+
 ##### 2.2.2.2. USB
 
 This definition will use the /dev/usb/lp0 device to connect to the printer:
@@ -257,7 +412,7 @@ Use "Phomemo-M02.ppd.gz" for M02, "Phomemo-M02Pro.ppd.gz" for M02 Pro, and "Phom
                           -P /usr/share/cups/model/Phomemo/Phomemo-M02S.ppd.gz
 ```
 
-###### 2.2.2.1.2 M110, M120, M220
+###### 2.2.2.2.2 M110, M120, M220
 
 Use "Phomemo-M110.ppd.gz" for M110, "Phomemo-M120.ppd.gz" for M120, and "Phomemo-M220.ppd.gz" for M220 (same driver, M220 exposes w70h80).
 The -p option defines the printer name. It should be changed according to the printer used.
@@ -506,3 +661,51 @@ Dumpping USB packets.
   0x1f 0xf0 0x05 0x00
   0x1f 0xf0 0x03 0x00
 ```
+
+# 6. Protocol for M832D
+
+The M832D uses the same GS v 0 raster block and ESC d feed as the M04 family, but its
+setup block is a fixed sequence that sends the readiness query up front, where the M02
+protocol in section 4.3 only sends it at the end of the job.
+
+```
+  0x1f 0x11 0x08      -> readiness query, answered by 0x1a 0x04 on the back channel
+  0x1f 0x11 0x37 0x37 -> heat, fixed at 0x37
+  0xaa 0xab 0xac 0x02 -> vendor triple, meaning unexplained
+  0x1f 0x11 0x02      -> print density, default 0x02
+  0x1f 0x11 0x0b      -> media type: continuous, or 0x26 for black mark
+  0x1f 0x11 0x35 0x00 -> compression: raw
+```
+
+The image is sent as one GS v 0 block per page, with 16-bit little-endian byte
+width and line count. The inter-page feed is ESC d 2 and the job footer is two
+ESC d 2 commands.
+
+The filter has two print modes. Grayscale uses PIL's Floyd-Steinberg by default, the
+same dithering the other filters use, with Atkinson as an explicit choice; Black and
+White is a hard threshold with no dithering, and the threshold value applies only to
+that mode.
+
+### 6.1. Bluetooth Low Energy backend
+
+The filter performs no transport I/O: `cups/filter/rastertopm832d.py` writes the
+command stream described above on stdout, and `cups/backend/phomemo-ble.py` carries
+it byte-for-byte and in order to the printer. The `phomemo` backend reads ModelName
+from the PPD and hands a queue in the BLE whitelist to that script with the same
+arguments, environment and CUPS descriptors.
+
+The printer is selected by the address in the queue URI, never by its advertised
+name, and the LE bearer is chosen explicitly rather than by falling back to Classic
+Bluetooth, as described in section 2.2.2.1.4. Pairing runs once automatically, only
+when no bond exists and only for Just Works, so PIN and passkey entry are refused.
+
+Characteristics are resolved by UUID rather than by captured ATT handles: FF02 must
+support acknowledged writes and FF03 must support notifications, and both are required
+before any job byte is accepted. Output goes to FF02 in chunks of at most 182 bytes,
+each awaiting its ATT response, so one chunk costs one round trip. FF03 values are
+forwarded raw and in callback order to the CUPS back channel (fd 3), where the filter
+looks only for the `1a 04` answer to its readiness query before sending the rest of the
+setup, and the side channel (fd 4) answers the page-pause drain only after every byte
+produced before that request has been acknowledged. An acknowledgement proves transport
+acceptance rather than a printed page, so the backend does not retry once bytes may have
+reached the printer.

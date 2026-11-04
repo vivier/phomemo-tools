@@ -11,6 +11,38 @@ from urllib.parse import quote
 bus = dbus.SystemBus()
 
 device_id = 'CLS:PRINTER;CMD:EPSON;DES:Thermal Printer;MFG:Phomemo;MDL:'
+
+# Models reached over Bluetooth Low Energy only. They have no RFCOMM channel, so
+# the job is handed to the phomemo-ble backend. Add a model here to gate its
+# queue to that backend; every other model keeps the RFCOMM path below.
+BLE_MODELS = ('M832D',)
+
+def model_from_ppd():
+    try:
+        # Read in binary: PPDs may be Latin-1 (translated NickNames etc.) and a
+        # UnicodeDecodeError here would abort the backend for every model. Match
+        # the ModelName line so a stray model name elsewhere can't misfire the gate.
+        with open(ppd_path(), 'rb') as fh:
+            for line in fh:
+                if line.startswith(b'*ModelName:'):
+                    return line[11:].decode('latin-1').strip().strip('"').split()[-1]
+    except Exception:
+        pass
+    return ''
+
+def ppd_path():
+    ppd = os.environ.get('PPD')
+    if not ppd:
+        ppd = '/etc/cups/ppd/%s.ppd' % os.environ.get('PRINTER', '')
+    return ppd
+
+def ble_backend():
+    # CUPS runs backends by full path, so the sibling script is next to this one.
+    path = os.path.join(os.path.dirname(sys.argv[0]), 'phomemo-ble')
+    if not os.path.exists(path):
+        path = '/usr/lib/cups/backend/phomemo-ble'
+    return path
+
 def scan_bluetooth():
     try:
         bluez = bus.get_object('org.bluez', '/')
@@ -33,8 +65,12 @@ def scan_bluetooth():
         except KeyError:
             continue
 
+        # Discovery only lists candidates; a print job still selects the printer by
+        # the address in its queue URI.
         if (name.startswith('Mr.in')):
             model = name[6:]
+        elif (name in BLE_MODELS):
+            model = name
         elif (name == 'T02'):
             model = name
         elif (name.startswith('M832')):
@@ -48,6 +84,7 @@ def scan_bluetooth():
 
         print('direct ' + device_uri + ' "' + device_make_and_model + '" "' +
               device_make_and_model + ' bluetooth ' + address + '" "' + device_id + model + ' (BT);"')
+
 
 class find_class(object):
     def __init__(self, class_):
@@ -118,26 +155,22 @@ bdaddr = a[0:2:] + ':' + a[2:4:] + ':' + a[4:6:] + ':' + a[6:8:] + ':' + a[8:10:
 
 print('DEBUG: ' + sys.argv[0] +' device ' + bdaddr)
 
+model = model_from_ppd()
+
+if model in BLE_MODELS:
+    # The M832D has no RFCOMM channel. Hand the job to the BLE backend with the
+    # same arguments, environment and CUPS descriptors.
+    backend = ble_backend()
+    if not os.path.exists(backend):
+        print("ERROR: %s is a Bluetooth Low Energy printer but the phomemo-ble "
+              "backend is not installed" % model, file=sys.stderr)
+        exit(1)
+    os.execv(backend, [backend] + sys.argv[1:])
+
 # The M04 family needs paced sends and a long connection hold (see below). Those
 # would needlessly slow every other Bluetooth model, so enable them only for M04
 # queues, detected from the PPD CUPS gives us for this job.
-def is_m04_queue():
-    ppd = os.environ.get('PPD')
-    if not ppd:
-        ppd = '/etc/cups/ppd/%s.ppd' % os.environ.get('PRINTER', '')
-    try:
-        # Read in binary: PPDs may be Latin-1 (translated NickNames etc.) and a
-        # UnicodeDecodeError here would abort the backend for every model. Match
-        # the ModelName line so a stray "M04" elsewhere can't misfire the gate.
-        with open(ppd, 'rb') as fh:
-            for line in fh:
-                if line.startswith(b'*ModelName:') and b'M04' in line:
-                    return True
-    except Exception:
-        pass
-    return False
-
-m04 = is_m04_queue()
+m04 = model.startswith('M04')
 
 try:
     print('STATE: +connecting-to-device')

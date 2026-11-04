@@ -1,0 +1,99 @@
+//
+// Driver info file for Phomemo M832D
+//
+// Copyright (c) 2026 Richard Dominguez <54754277+rdoming2@users.noreply.github.com>
+//
+// BLE-only model: the phomemo backend delegates queues using this driver to the
+// phomemo-ble backend. The same filter also serves the USB queue.
+//
+
+#include <font.defs>
+#include <media.defs>
+#include <label.h>
+
+// Printable width is 576 dots at 300 DPI (approximately 48 mm), and the tested
+// widths are 53 mm, 110 mm and a custom 57.15 mm.
+#media "w53h70/Label 53mmx70mm" 53mm 70mm
+#media "w80h106/Label 80mmx106mm" 80mm 106mm
+#media "w110h146/Label 110mmx146mm" 110mm 146mm
+#media "Letter/Letter" 8.5in 11in
+#media "A4/A4" 210mm 297mm
+
+Manufacturer "Phomemo"
+Version 2.0
+DriverType label
+ColorDevice No
+Attribute "cupsSNMPSupplies" "" "false"
+HWMargins 0 0 0 0
+
+Filter "application/vnd.cups-raster 100 rastertopm832d"
+*Resolution - 8 0 0 0 300dpi
+ColorModel Gray/Grayscale w chunky 0
+
+*MediaSize "w53h70"
+MediaSize "w80h106"
+MediaSize "w110h146"
+HWMargins 5mm 10.58mm 5mm 10.58mm
+MediaSize "Letter"
+MediaSize "A4"
+HWMargins 0 0 0 0
+VariablePaperSize Yes
+MinSize 0mm 0mm
+MaxSize 216mm 0mm
+
+// Media type is chosen by the PPD and reaches the filter as cupsMediaType.
+// Continuous is the default; BLine is the black mark stock, which the filter
+// reports to the printer as 1F 11 26 instead of 1F 11 0B.
+*MediaType 11 "Continuous/Continuous"
+MediaType 38 "BLine/Black Mark"
+
+{
+  Attribute "NickName" "" "Phomemo M832D"
+  ModelName "M832D"
+  PCFileName "Phomemo-M832D.ppd"
+
+  Option "M832DDarkness/Darkness" PickOne DocumentSetup 10
+   *Choice "Default/Default" ""
+   Choice "Fine/Fine" ""
+   Choice "Medium/Medium" ""
+   Choice "Thick/Thick" ""
+
+  // Print mode is the choice the M832 driver offers: Grayscale keeps the
+  // dithering technique below, Black and White is a hard threshold with no
+  // dithering. The threshold value applies only to Black and White.
+  Option "M832DPrintMode/Print Mode" PickOne AnySetup 10
+   *Choice "Grayscale/Grayscale (dithered)" ""
+   Choice "BlackWhite/Black and White" ""
+
+  // The default is PIL's Floyd-Steinberg, the same path the other Phomemo
+  // filters use. It applies only when the print mode is Grayscale.
+  Option "M832DRendering/Grayscale dithering" PickOne AnySetup 10
+   *Choice "FloydSteinberg/Floyd-Steinberg (PIL)" ""
+   Choice "Atkinson/Atkinson" ""
+
+  Option "M832DThreshold/Black and White threshold" PickOne AnySetup 10
+   *Choice "160/160" ""
+   Choice "128/128" ""
+   Choice "192/192" ""
+
+  Option "M832DRotation/Rotation" PickOne AnySetup 10
+   *Choice "0/0" ""
+   Choice "90/90" ""
+   Choice "180/180" ""
+   Choice "270/270" ""
+
+  Option "M832DOffsetX/Horizontal offset" PickOne AnySetup 10
+   *Choice "0/0" ""
+   Choice "8/8" ""
+
+  Option "M832DOffsetY/Vertical offset" PickOne AnySetup 10
+   *Choice "0/0" ""
+   Choice "8/8" ""
+
+  Option "M832DPagePause/Pause between pages" PickOne DocumentSetup 10
+   *Choice "0/Off" ""
+   Choice "5/5 seconds" ""
+   Choice "10/10 seconds" ""
+   Choice "20/20 seconds" ""
+   Choice "30/30 seconds" ""
+}

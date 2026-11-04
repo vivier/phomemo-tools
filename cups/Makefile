@@ -1,31 +1,55 @@
+CUPS_DATADIR = $(DESTDIR)/usr/share/cups
+CUPS_LIBDIR = $(DESTDIR)/usr/lib/cups
+
+DRVFILES = phomemo-m02_t02.drv
+DRVFILES += phomemo-m02pro.drv
+DRVFILES += phomemo-m110.drv
+DRVFILES += phomemo-d30.drv
+DRVFILES += phomemo-m421.drv
+DRVFILES += phomemo-m04.drv
+DRVFILES += phomemo-m832.drv
+DRVFILES += phomemo-m832d.drv
+
+PPDFILES = Phomemo-M02.ppd.gz
+PPDFILES += Phomemo-M02Pro.ppd.gz
+PPDFILES += Phomemo-M02S.ppd.gz
+PPDFILES += Phomemo-T02.ppd.gz
+PPDFILES += Phomemo-D30.ppd.gz
+PPDFILES += Phomemo-M04S.ppd.gz
+PPDFILES += Phomemo-M04AS.ppd.gz
+PPDFILES += Phomemo-M832.ppd.gz
+PPDFILES += Phomemo-M832D.ppd.gz
+PPDFILES += Phomemo-M110.ppd.gz
+PPDFILES += Phomemo-M120.ppd.gz
+PPDFILES += Phomemo-M220.ppd.gz
+PPDFILES += Phomemo-M421.ppd.gz
+
+FILTERS = rastertopm02_t02
+FILTERS += rastertopm110
+FILTERS += rastertopd30
+FILTERS += rastertopm04
+FILTERS += rastertopm832
+FILTERS += rastertopm832d
+
+BACKENDS = phomemo
+BACKENDS += phomemo-ble
+
+.PHONY: all ppds install uninstall
+
 all: ppds
 
 ppds:
 	LC_ALL=C ppdc -z drv/*
 
 install:
-	install -D drv/phomemo-m02_t02.drv -t $(DESTDIR)/usr/share/cups/drv/
-	install -D drv/phomemo-m02pro.drv -t $(DESTDIR)/usr/share/cups/drv/
-	install -D ppd/Phomemo-M02.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M02Pro.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M02S.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-T02.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-D30.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D drv/phomemo-m110.drv -t $(DESTDIR)/usr/share/cups/drv/
-	install -D drv/phomemo-d30.drv -t $(DESTDIR)/usr/share/cups/drv/
-	install -D drv/phomemo-m421.drv -t $(DESTDIR)/usr/share/cups/drv/
-	install -D drv/phomemo-m04.drv -t $(DESTDIR)/usr/share/cups/drv/
-	install -D drv/phomemo-m832.drv -t $(DESTDIR)/usr/share/cups/drv/
-	install -D ppd/Phomemo-M04S.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M04AS.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M832.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M110.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M120.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M220.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -D ppd/Phomemo-M421.ppd.gz -t $(DESTDIR)/usr/share/cups/model/Phomemo
-	install -Dm 755 filter/rastertopm02_t02.py $(DESTDIR)/usr/lib/cups/filter/rastertopm02_t02
-	install -Dm 755 filter/rastertopm110.py $(DESTDIR)/usr/lib/cups/filter/rastertopm110
-	install -Dm 755 filter/rastertopd30.py $(DESTDIR)/usr/lib/cups/filter/rastertopd30
-	install -Dm 755 filter/rastertopm04.py $(DESTDIR)/usr/lib/cups/filter/rastertopm04
-	install -Dm 755 filter/rastertopm832.py $(DESTDIR)/usr/lib/cups/filter/rastertopm832
-	install -Dm 755 backend/phomemo.py $(DESTDIR)/usr/lib/cups/backend/phomemo
+	for f in $(DRVFILES); do install -D drv/$$f $(CUPS_DATADIR)/drv/$$f; done
+	for f in $(PPDFILES); do install -D ppd/$$f $(CUPS_DATADIR)/model/Phomemo/$$f; done
+	for f in $(FILTERS); do install -Dm 755 filter/$$f.py $(CUPS_LIBDIR)/filter/$$f; done
+	for f in $(BACKENDS); do install -Dm 755 backend/$$f.py $(CUPS_LIBDIR)/backend/$$f; done
+
+uninstall:
+	for f in $(DRVFILES); do rm -f $(CUPS_DATADIR)/drv/$$f; done
+	for f in $(PPDFILES); do rm -f $(CUPS_DATADIR)/model/Phomemo/$$f; done
+	for f in $(FILTERS); do rm -f $(CUPS_LIBDIR)/filter/$$f; done
+	for f in $(BACKENDS); do rm -f $(CUPS_LIBDIR)/backend/$$f; done
+	if [ -d $(CUPS_DATADIR)/model/Phomemo ]; then rmdir --ignore-fail-on-non-empty $(CUPS_DATADIR)/model/Phomemo; fi

@@ -13,6 +13,9 @@ Requires: cups
 Requires: python3
 Requires: python3-pillow
 Requires: python3-pyusb
+# Needed only by the M832D Bluetooth Low Energy backend
+Requires: python3-bleak
+Requires: python3-dbus-fast
 
 %description
 This packages provides tools to send images to print on Phomemo M02
@@ -59,6 +62,7 @@ semanage permissive -a cupsd_t
 /usr/share/cups/model/Phomemo/Phomemo-M04S.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M04AS.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M832.ppd.gz
+/usr/share/cups/model/Phomemo/Phomemo-M832D.ppd.gz
 /usr/share/cups/drv/phomemo-m02_t02.drv
 /usr/share/cups/drv/phomemo-m02pro.drv
 /usr/share/cups/drv/phomemo-m110.drv
@@ -66,12 +70,15 @@ semanage permissive -a cupsd_t
 /usr/share/cups/drv/phomemo-m421.drv
 /usr/share/cups/drv/phomemo-m04.drv
 /usr/share/cups/drv/phomemo-m832.drv
+/usr/share/cups/drv/phomemo-m832d.drv
 /usr/lib/cups/filter/rastertopm02_t02
 /usr/lib/cups/filter/rastertopm110
 /usr/lib/cups/filter/rastertopd30
 /usr/lib/cups/filter/rastertopm04
 /usr/lib/cups/filter/rastertopm832
+/usr/lib/cups/filter/rastertopm832d
 /usr/lib/cups/backend/phomemo
+/usr/lib/cups/backend/phomemo-ble
 
 %files images
 /usr/share/phomemo/images
