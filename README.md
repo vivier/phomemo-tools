@@ -1,7 +1,7 @@
 # Phomemo-tools
 
 This package is trying to provide tools to print pictures using
-the Phomemo M02, M02 Pro, M02S, M110, M120, M220, T02 and M832 thermal printers from Linux.
+the Phomemo M02, M02 Pro, M02S, M110, M120, M220, M221, T02 and M832 thermal printers from Linux.
 
 All the information here has been reverse-engineered sniffing
 the bluetooth packets emitted by the Android application.
@@ -213,9 +213,9 @@ Use "Phomemo-M02.ppd.gz" for M02, "Phomemo-M02Pro.ppd.gz" for M02 Pro, and "Phom
                           -P /usr/share/cups/model/Phomemo/Phomemo-M02S.ppd.gz
 ```
 
-###### 2.2.2.1.2 M110, M120, M220
+###### 2.2.2.1.2 M110, M120, M220, M221
 
-Use "Phomemo-M110.ppd.gz" for M110, "Phomemo-M120.ppd.gz" for M120, and "Phomemo-M220.ppd.gz" for M220 (same driver, M220 exposes w70h80).
+Use "Phomemo-M110.ppd.gz" for M110, "Phomemo-M120.ppd.gz" for M120, "Phomemo-M220.ppd.gz" for M220 and "Phomemo-M221.ppd.gz" for M221 (same driver, M220 and M221 expose w70h80).
 The -p option defines the printer name. It should be changed according to the printer used.
 
 ```
@@ -257,9 +257,9 @@ Use "Phomemo-M02.ppd.gz" for M02, "Phomemo-M02Pro.ppd.gz" for M02 Pro, and "Phom
                           -P /usr/share/cups/model/Phomemo/Phomemo-M02S.ppd.gz
 ```
 
-###### 2.2.2.1.2 M110, M120, M220
+###### 2.2.2.1.2 M110, M120, M220, M221
 
-Use "Phomemo-M110.ppd.gz" for M110, "Phomemo-M120.ppd.gz" for M120, and "Phomemo-M220.ppd.gz" for M220 (same driver, M220 exposes w70h80).
+Use "Phomemo-M110.ppd.gz" for M110, "Phomemo-M120.ppd.gz" for M120, "Phomemo-M220.ppd.gz" for M220 and "Phomemo-M221.ppd.gz" for M221 (same driver, M220 and M221 expose w70h80).
 The -p option defines the printer name. It should be changed according to the printer used.
 
 ```
@@ -289,10 +289,19 @@ You can use the following command to print an image using CUPS:
   $ lp -d M02 -o media=w50h60 my_picture.png
 ```
 
-The M110, M120 & M220 printers have support for LabelWithGaps, Continuous and LabelWithMarks media types which can be specified as follows:
+The M110, M120, M220 & M221 printers have support for LabelWithGaps, Continuous and LabelWithMarks media types which can be specified as follows:
 
 ```
   $ echo "This is test"  | lp -d M110 -o media=w30h20 -o MediaType=Continuous
+```
+
+The M221 has a 72 mm print head with the label roll centered under it. The
+driver centers each label on the head; if the print is slightly off, it can be
+fine-tuned with the `HorizontalShift` option (Left2mm, Left1mm, None, Right1mm,
+Right2mm):
+
+```
+  $ lp -d M221 -o media=w40h30 -o HorizontalShift=Left1mm my_label.pdf
 ```
 
 ## 3. Image samples to use with the printer
@@ -475,7 +484,7 @@ After dumpping bluetooth packets, it appears to be EPSON ESC/POS Commands.
 51 30 30 31 45 30 XX XX XX XX XX XX XX XX XX -> Serial Numer: E05C0XXXXXX
 ```
 
-## 5. Protocol for M110/M120/M220
+## 5. Protocol for M110/M120/M220/M221
 
 Dumpping USB packets.
 

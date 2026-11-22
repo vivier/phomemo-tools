@@ -55,6 +55,7 @@ semanage permissive -a cupsd_t
 /usr/share/cups/model/Phomemo/Phomemo-M120.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-D30.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M220.ppd.gz
+/usr/share/cups/model/Phomemo/Phomemo-M221.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M421.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M04S.ppd.gz
 /usr/share/cups/model/Phomemo/Phomemo-M04AS.ppd.gz

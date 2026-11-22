@@ -99,6 +99,23 @@ def print_footer(file):
     file.write(b'\x1f' + b'\xf0' + b'\x05' + b'\x00')
     file.write(b'\x1f' + b'\xf0' + b'\x03' + b'\x00')
 
+def signed32(value):
+    # Raster header integers are read unsigned; PPD values may be negative
+    return value - (1 << 32) if value >= (1 << 31) else value
+
+def pad_to_head(image, head_width, shift):
+    # Some models (M221) have a print head wider than the label and do not
+    # center a narrower raster: place the label on a full head-width canvas,
+    # centered (the roll sits centered under the head) plus a fine-tune shift.
+    head_width = (head_width + 7) // 8 * 8
+    if head_width <= image.width:
+        return image
+    offset = (head_width - image.width) // 2 + shift
+    offset = max(0, min(offset, head_width - image.width))
+    canvas = Image.new('1', (head_width, image.height), 0)  # 0 = no dot
+    canvas.paste(image, (offset, 0))
+    return canvas
+
 pages = read_ras3(sys.stdin.buffer.read())
 
 for i, datatuple in enumerate(pages):
@@ -111,6 +128,9 @@ for i, datatuple in enumerate(pages):
                           size=(header.cupsWidth, header.cupsHeight))
     im = ImageOps.invert(im)
     im = im.convert('1')
+    # PPD cupsInteger0/1 (zero-based) arrive here as cupsInteger1/2;
+    # both are 0 for models that do not need padding.
+    im = pad_to_head(im, header.cupsInteger1, signed32(header.cupsInteger2))
 
     line = 0
     

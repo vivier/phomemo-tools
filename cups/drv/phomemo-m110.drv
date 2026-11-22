@@ -1,5 +1,5 @@
 //
-// Driver info file for Phomemo M110/120/220
+// Driver info file for Phomemo M110/120/220/221
 //
 // Copyright © 2020 Laurent Vivier <laurent@vivier.eu>
 //
@@ -87,4 +87,20 @@ MediaType 38 "LabelWithMarks/Label With Marks"
   PCFileName "Phomemo-M220.ppd"
   Attribute "NickName" "" "Phomemo M220"
   MediaSize "w70h80"
+}
+{
+  // The M221 has a 72 mm (576 dot) print head with the label roll centered
+  // under it. A raster narrower than the head is not centered by the printer,
+  // so the filter pads each page to the full head width (cupsInteger0) and
+  // centers the label on it. HorizontalShift fine-tunes the position.
+  ModelName "M221"
+  PCFileName "Phomemo-M221.ppd"
+  Attribute "NickName" "" "Phomemo M221"
+  MediaSize "w70h80"
+  Option "HorizontalShift/Horizontal Shift" PickOne AnySetup 10.0
+    Choice "Left2mm/2 mm left" "<</cupsInteger0 576/cupsInteger1 -16>>setpagedevice"
+    Choice "Left1mm/1 mm left" "<</cupsInteger0 576/cupsInteger1 -8>>setpagedevice"
+    *Choice "None/None (centered)" "<</cupsInteger0 576/cupsInteger1 0>>setpagedevice"
+    Choice "Right1mm/1 mm right" "<</cupsInteger0 576/cupsInteger1 8>>setpagedevice"
+    Choice "Right2mm/2 mm right" "<</cupsInteger0 576/cupsInteger1 16>>setpagedevice"
 }
