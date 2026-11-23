@@ -18,7 +18,7 @@ CupsRas3 = namedtuple(
     'NegativePrint NumCopies Orientation OutputFaceUp PageSizeW PageSizeH Separations TraySwitch Tumble cupsWidth '
     'cupsHeight cupsMediaType cupsBitsPerColor cupsBitsPerPixel cupsBitsPerLine cupsColorOrder cupsColorSpace '
     'cupsCompression cupsRowCount cupsRowFeed cupsRowStep cupsNumColors cupsBorderlessScalingFactor cupsPageSizeW '
-    'cupsPageSizeH cupsImagingBBoxL cupsImagingBBoxB cupsImagingBBoxR cupsImagingBBoxT cupsInteger1 cupsInteger2 '
+    'cupsPageSizeH cupsImagingBBoxL cupsImagingBBoxB cupsImagingBBoxR cupsImagingBBoxT cupsHeadWidth cupsHorizontalShift '
     'cupsInteger3 cupsInteger4 cupsInteger5 cupsInteger6 cupsInteger7 cupsInteger8 cupsInteger9 cupsInteger10 '
     'cupsInteger11 cupsInteger12 cupsInteger13 cupsInteger14 cupsInteger15 cupsInteger16 cupsReal1 cupsReal2 '
     'cupsReal3 cupsReal4 cupsReal5 cupsReal6 cupsReal7 cupsReal8 cupsReal9 cupsReal10 cupsReal11 cupsReal12 '
@@ -41,7 +41,7 @@ def read_ras3(rdata):
     while rdata:  # Loop over all pages
         struct_data = unpack(
             '@64s 64s 64s 64s I I I I I II IIII I I I II I I I I I I I I II I I I I I I I I I I I I I '
-            'I I I f ff ffff IIIIIIIIIIIIIIII ffffffffffffffff 64s 64s 64s 64s 64s 64s 64s 64s 64s 64s '
+            'I I I f ff ffff IiIIIIIIIIIIIIII ffffffffffffffff 64s 64s 64s 64s 64s 64s 64s 64s 64s 64s '
             '64s 64s 64s 64s 64s 64s 64s 64s 64s',
             rdata[0:1796]
         )
@@ -99,6 +99,19 @@ def print_footer(file):
     file.write(b'\x1f' + b'\xf0' + b'\x05' + b'\x00')
     file.write(b'\x1f' + b'\xf0' + b'\x03' + b'\x00')
 
+def pad_to_head(image, head_width, shift):
+    # Some models (M221) have a print head wider than the label and do not
+    # center a narrower raster: place the label on a full head-width canvas,
+    # centered (the roll sits centered under the head) plus a fine-tune shift.
+    head_width = (head_width + 7) // 8 * 8
+    if head_width <= image.width:
+        return image
+    offset = (head_width - image.width) // 2 + shift
+    offset = max(0, min(offset, head_width - image.width))
+    canvas = Image.new('1', (head_width, image.height), 0)  # 0 = no dot
+    canvas.paste(image, (offset, 0))
+    return canvas
+
 pages = read_ras3(sys.stdin.buffer.read())
 
 for i, datatuple in enumerate(pages):
@@ -111,6 +124,8 @@ for i, datatuple in enumerate(pages):
                           size=(header.cupsWidth, header.cupsHeight))
     im = ImageOps.invert(im)
     im = im.convert('1')
+    # PPD cupsInteger0/1: both are 0 for models that do not need padding
+    im = pad_to_head(im, header.cupsHeadWidth, header.cupsHorizontalShift)
 
     line = 0
     
